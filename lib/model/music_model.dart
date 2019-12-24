@@ -1,3 +1,6 @@
-import 'package:flutter/widgets.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:music/stores/provider.dart';
 
-class MusicModel with ChangeNotifier {}
+class MusicModel extends MuProvider {
+  AudioPlayer audioPlayer;
+}

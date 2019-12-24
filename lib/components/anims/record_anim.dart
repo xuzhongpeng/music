@@ -1,3 +1,11 @@
+/*
+ * @Author: xuzhongpeng
+ * @email: xuzhongpeng@foxmail.com
+ * @Date: 2019-12-24 08:43:14
+ * @LastEditors  : xuzhongpeng
+ * @LastEditTime : 2019-12-24 09:11:09
+ * @Description: 播放器页面
+ */
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 

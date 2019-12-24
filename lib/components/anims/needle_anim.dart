@@ -1,3 +1,11 @@
+/*
+ * @Author: xuzhongpeng
+ * @email: xuzhongpeng@foxmail.com
+ * @Date: 2019-12-24 08:43:14
+ * @LastEditors  : xuzhongpeng
+ * @LastEditTime : 2019-12-24 09:11:32
+ * @Description: 旋转组件
+ */
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -51,7 +59,7 @@ class AnimatedNeedle extends AnimatedWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: AssetImage("images/play_needle.png"),
+                image: AssetImage("lib/assets/play_needle.png"),
               ),
             ),
           )),

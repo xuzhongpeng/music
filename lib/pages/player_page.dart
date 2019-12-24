@@ -1,3 +1,4 @@
+import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/lyric_panel.dart';
@@ -53,6 +54,7 @@ class Player extends StatefulWidget {
 class PlayerState extends State<Player> {
   AudioPlayer audioPlayer;
   bool isPlaying = false;
+  AudioCache audioCache = AudioCache();
   Duration duration;
   Duration position;
   double sliderValue;
@@ -178,15 +180,18 @@ class PlayerState extends State<Player> {
               ),
             ),
             new IconButton(
-              onPressed: () {
-                if (isPlaying)
+              onPressed: () async {
+                if (isPlaying) {
+                  // audioCache.clearCache();
                   audioPlayer.pause();
-                else {
-                  audioPlayer.play(
-                    widget.audioUrl,
-                    isLocal: widget.isLocal,
-                    volume: widget.volume,
-                  );
+                } else {
+                  // audioCache.play('123.mp3');
+                  // int res = await audioPlayer.play(
+                  //   widget.audioUrl,
+                  //   isLocal: widget.isLocal,
+                  //   volume: widget.volume,
+                  // );
+                  // print("******" + res.toString());
                 }
                 setState(() {
                   isPlaying = !isPlaying;

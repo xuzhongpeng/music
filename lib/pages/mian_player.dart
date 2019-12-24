@@ -1,15 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:music/anims/needle_anim.dart';
-import 'package:music/anims/record_anim.dart';
+import 'package:music/components/anims/needle_anim.dart';
+import 'package:music/components/anims/record_anim.dart';
 import 'package:music/pages/player_page.dart';
 
 final GlobalKey<PlayerState> musicPlayerKey = new GlobalKey();
 
 const String coverArt =
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEKU9rkbdInt9fPTlJMjT_gbwlyBqbE60zELhHy_A2yMsJkBmDTw',
-    mp3Url = 'http://music.163.com/song/media/outer/url?id=451703096.mp3';
+    mp3Url = 'http://192.168.1.136:8080/123.mp3';
 
 class MusicPlayerExample extends StatefulWidget {
   @override
@@ -109,7 +109,7 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
                       alignment: FractionalOffset.topLeft,
                       child: new Container(
                         width: 100.0,
-                        child: new Image.asset("images/play_needle.png"),
+                        child: new Image.asset("lib/assets/play_needle.png"),
                       ),
                     ),
                   ),
