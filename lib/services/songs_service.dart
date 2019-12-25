@@ -24,6 +24,14 @@ class SongService {
       "${Urls.qq}/song/urls",
       queryParameters: {"id": music.cid},
     );
-    return res.data[music.cid];
+    if (res != null && res.data != null) {
+      if (res.data['result'] == 100) {
+        return res.data['data'][music.cid];
+      } else {
+        //出错
+      }
+    } else {
+      return null;
+    }
   }
 }
