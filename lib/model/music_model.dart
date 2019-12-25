@@ -1,16 +1,11 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/services/songs_service.dart';
 import 'package:music/stores/provider.dart';
 
 class MusicModel extends MuProvider {
-  AudioPlayer audioPlayer = AudioPlayer();
-  List<Musics> musics = List();
-  search(String key) {
-    SongService().searchQQ(key).then((song) {
-      musics = song;
-      notifyListeners();
-    });
+  List<Musics> musics = List(); // 播放列表
+  Future<List<Musics>> search(String key) {
+    return SongService().searchQQ(key);
   }
 
   Future<String> getDetail(Musics musics) async {

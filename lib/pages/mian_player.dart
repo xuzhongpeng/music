@@ -117,30 +117,7 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
               ),
               new Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
-                child: new Player(
-                  onError: (e) {
-                    Scaffold.of(context).showSnackBar(
-                      new SnackBar(
-                        content: new Text(e),
-                      ),
-                    );
-                  },
-                  onPrevious: () {},
-                  onNext: () {},
-                  onCompleted: () {},
-                  onPlaying: (isPlaying) {
-                    if (isPlaying) {
-                      controllerRecord.forward();
-                      controllerNeedle.forward();
-                    } else {
-                      controllerRecord.stop(canceled: false);
-                      controllerNeedle.reverse();
-                    }
-                  },
-                  key: musicPlayerKey,
-                  color: Colors.white,
-                  audioUrl: mp3Url,
-                ),
+                child: new Player(),
               ),
             ],
           ),

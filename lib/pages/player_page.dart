@@ -2,48 +2,13 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/lyric_panel.dart';
+import 'package:music/model/player_model.dart';
+import 'package:music/stores/store.dart';
 // import 'package:music/model/lyric.dart';
 // import 'package:music/utils.dart';
 
 class Player extends StatefulWidget {
-  /// [AudioPlayer] 播放地址
-  final String audioUrl;
-
-  /// 音量
-  final double volume;
-
-  /// 错误回调
-  final Function(String) onError;
-
-  ///播放完成
-  final Function() onCompleted;
-
-  /// 上一首
-  final Function() onPrevious;
-
-  ///下一首
-  final Function() onNext;
-
-  final Function(bool) onPlaying;
-
-  final Key key;
-
-  final Color color;
-
-  /// 是否是本地资源
-  final bool isLocal;
-
-  const Player(
-      {@required this.audioUrl,
-      @required this.onCompleted,
-      @required this.onError,
-      @required this.onNext,
-      @required this.onPrevious,
-      this.key,
-      this.volume: 1.0,
-      this.onPlaying,
-      this.color: Colors.white,
-      this.isLocal: false});
+  const Player();
 
   @override
   State<StatefulWidget> createState() {
@@ -52,6 +17,7 @@ class Player extends StatefulWidget {
 }
 
 class PlayerState extends State<Player> {
+  PlayerModel get _playerModel => Store.value<PlayerModel>(context);
   AudioPlayer audioPlayer;
   bool isPlaying = false;
   AudioCache audioCache = AudioCache();
@@ -65,41 +31,7 @@ class PlayerState extends State<Player> {
   @override
   void initState() {
     super.initState();
-    print("audioUrl:" + widget.audioUrl);
-    // Utils.getLyricFromTxt().then((Lyric lyric) {
-    //   print("getLyricFromTxt:" + lyric.slices.length.toString());
-    //   setState(() {
-    //     this.lyric = lyric;
-    //     panel = new LyricPanel(this.lyric);
-    //   });
-    // });
-
-    audioPlayer = new AudioPlayer();
-    audioPlayer
-      ..onPlayerCompletion.listen((_) => widget.onCompleted)
-      ..onPlayerError.listen(widget.onError)
-      ..onDurationChanged.listen((duration) {
-        setState(() {
-          this.duration = duration;
-
-          if (position != null) {
-            this.sliderValue = (position.inSeconds / duration.inSeconds);
-          }
-        });
-      })
-      ..onAudioPositionChanged.listen((position) {
-        setState(() {
-          this.position = position;
-
-          // if (panel != null) {
-          //   panel.handler(position.inSeconds);
-          // }
-
-          if (duration != null) {
-            this.sliderValue = (position.inSeconds / duration.inSeconds);
-          }
-        });
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   @override
@@ -125,16 +57,66 @@ class PlayerState extends State<Player> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    audioPlayer = _playerModel.audioPlayer;
+    // Utils.getLyricFromTxt().then((Lyric lyric) {
+    //   print("getLyricFromTxt:" + lyric.slices.length.toString());
+    //   setState(() {
+    //     this.lyric = lyric;
+    //     panel = new LyricPanel(this.lyric);
+    //   });
+    // });
+
+    audioPlayer
+      ..onDurationChanged.listen((duration) {
+        setState(() {
+          this.duration = duration;
+
+          if (position != null) {
+            this.sliderValue = (position.inSeconds / duration.inSeconds);
+          }
+        });
+      })
+      ..onAudioPositionChanged.listen((position) {
+        setState(() {
+          this.position = position;
+
+          // if (panel != null) {
+          //   panel.handler(position.inSeconds);
+          // }
+
+          if (duration != null) {
+            this.sliderValue = (position.inSeconds / duration.inSeconds);
+          }
+        });
+      })
+      ..onPlayerCompletion.listen((_) {
+        setState(() {
+          this.isPlaying = true;
+        });
+      });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return new Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: _controllers(context),
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+        child: SafeArea(
+          child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: _controllers(context),
+          ),
+        ),
+      ),
     );
   }
 
   Widget _timer(BuildContext context) {
-    var style = new TextStyle(color: widget.color);
+    var style = new TextStyle(color: Colors.black);
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
@@ -154,7 +136,6 @@ class PlayerState extends State<Player> {
 
   List<Widget> _controllers(BuildContext context) {
     print("_controllers");
-
     return [
       // lyric != null ? panel : Container(),
       Divider(color: Colors.transparent),
@@ -170,47 +151,39 @@ class PlayerState extends State<Player> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             new IconButton(
-              onPressed: () {
-                widget.onPrevious();
-              },
+              onPressed: () {},
               icon: new Icon(
                 Icons.skip_previous,
                 size: 32.0,
-                color: widget.color,
+                color: Colors.black,
               ),
             ),
             new IconButton(
               onPressed: () async {
                 if (isPlaying) {
-                  // audioCache.clearCache();
                   audioPlayer.pause();
                 } else {
-                  // audioCache.play('123.mp3');
-                  // int res = await audioPlayer.play(
-                  //   widget.audioUrl,
-                  //   isLocal: widget.isLocal,
-                  //   volume: widget.volume,
-                  // );
-                  // print("******" + res.toString());
+                  audioPlayer.resume();
                 }
                 setState(() {
                   isPlaying = !isPlaying;
-                  widget.onPlaying(isPlaying);
                 });
               },
               padding: const EdgeInsets.all(0.0),
               icon: new Icon(
                 isPlaying ? Icons.pause : Icons.play_arrow,
                 size: 48.0,
-                color: widget.color,
+                color: Colors.black,
               ),
             ),
             new IconButton(
-              onPressed: widget.onNext,
+              onPressed: () {
+                //next
+              },
               icon: new Icon(
                 Icons.skip_next,
                 size: 32.0,
-                color: widget.color,
+                color: Colors.black,
               ),
             ),
           ],
@@ -226,7 +199,7 @@ class PlayerState extends State<Player> {
           }
         },
         value: sliderValue ?? 0.0,
-        activeColor: widget.color,
+        activeColor: Colors.black,
       ),
       new Padding(
         padding: const EdgeInsets.symmetric(
