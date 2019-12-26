@@ -8,12 +8,13 @@ class Musics {
   String id;
   String cid;
   String medie; //咪咕用
-  List<String> imagUrls;
+  String headerImg;
 
   Musics.fromMigu(Map<String, dynamic> json) {
     name = json['name'];
     id = json['id'];
     cid = json['cid'];
+
     from = FromType.migu;
   }
 
@@ -22,6 +23,8 @@ class Musics {
     singer =
         (json['singer'] as List).map((si) => si['name']).toList().join(',');
     id = json['songid'].toString();
+    headerImg =
+        'https://y.gtimg.cn/music/photo_new/T002R300x300M000${json['albummid']}.jpg';
     cid = json['songmid'];
   }
 }

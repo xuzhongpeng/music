@@ -53,15 +53,13 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: TsangerJinKai
-  #     fonts:
-  #       - asset: lib/assets/font/TsangerJinKai01JF-W01.ttf
-  #       - asset: lib/assets/font/TsangerJinKai01JF-W02.ttf
-  #       - asset: lib/assets/font/TsangerJinKai01JF-W03.ttf
-  #       - asset: lib/assets/font/TsangerJinKai01JF-W04.ttf
-  #       - asset: lib/assets/font/TsangerJinKai01JF-W05.ttf
-  #         weight: 700
+  fonts:
+    - family: alifont
+      fonts:
+        - asset: lib/assets/font/webfont.ttf
+    - family: iconfont
+      fonts:
+        - asset: lib/assets/iconfont/iconfont.ttf
     # - family: Trajan Pro
     #   fonts:
     #     - asset: fonts/TrajanPro.ttf

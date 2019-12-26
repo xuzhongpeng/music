@@ -21,7 +21,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<PlayerModel>(create: (_) => PlayerModel())
       ],
       child: new MaterialApp(
-        theme: new ThemeData(primarySwatch: Colors.blue, fontFamily: ''),
+        theme: new ThemeData(
+            primarySwatch: Colors.blue,
+            fontFamily: 'alifont',
+            primaryColor: Colors.blue),
         home: new SearchSongs(),
       ),
     );

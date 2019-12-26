@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/input_type_group.dart';
+import 'package:music/components/UI/music_bottom_bar.dart';
+import 'package:music/components/UI/music_list.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/model/music_model.dart';
 import 'package:music/model/player_model.dart';
@@ -63,12 +65,12 @@ class _SearchSongsState extends State<SearchSongs> {
               children: musics
                   .map(
                     (song) => GestureDetector(
-                      child: item(song),
+                      child: MusicList(song: song),
                       onTap: () async {
                         print(Platform.isAndroid);
                         song.url =
                             Song.fromQQ(minUrl: await _model.getDetail(song));
-                        _playModel.audioPlayer.play(song.url.minUrl);
+                        _playModel.play(context, song);
                         Navigator.push(context,
                             MaterialPageRoute(builder: (_) => Player()));
                       },
@@ -79,59 +81,7 @@ class _SearchSongsState extends State<SearchSongs> {
           ),
         ]),
       ),
-    );
-  }
-
-  Widget item(Musics song) {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      width: size.width,
-      height: 60,
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 1, color: Color.fromRGBO(222, 226, 230, 1)))),
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: size.width * 0.7,
-            padding: EdgeInsets.only(left: 10),
-            // color: Colors.red,
-            child: Column(
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.centerLeft,
-                  height: 30,
-                  child: Text(song.name,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: Color.fromRGBO(0, 0, 0, 1),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w300)),
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  height: 20,
-                  child: Text(song.singer,
-                      style: TextStyle(
-                          color: Color.fromRGBO(119, 119, 119, 1),
-                          fontSize: 12)),
-                )
-              ],
-            ),
-          ),
-          Container(
-            width: size.width * 0.3,
-            // color: Colors.blue,
-            padding: EdgeInsets.only(right: 15),
-            alignment: Alignment.centerRight,
-            child: Icon(
-              Icons.play_circle_outline,
-              color: Color.fromRGBO(119, 119, 119, 1),
-            ),
-          )
-        ],
-      ),
+      bottomNavigationBar: MusicBottomBar(),
     );
   }
 }

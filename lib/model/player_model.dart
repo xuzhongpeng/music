@@ -9,12 +9,24 @@ class PlayerModel extends MuProvider {
   AudioPlayer _audioPlayer = AudioPlayer();
   AudioPlayer get audioPlayer => _audioPlayer;
   MusicModel _musicModel;
-  //播放音乐
+  //播放新音乐
   Future<bool> play(BuildContext context, Musics music) async {
     int result = await _audioPlayer.play(music.url.midUrl);
     _musicModel = s.Store.value(context);
     _musicModel.play = music;
     notifyListeners();
     return result == 1;
+  }
+
+  //暂停
+  pause() {
+    _audioPlayer.pause();
+    notifyListeners();
+  }
+
+  //播放
+  resume() {
+    _audioPlayer.resume();
+    notifyListeners();
   }
 }
