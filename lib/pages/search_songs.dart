@@ -122,7 +122,13 @@ class _SearchSongsState extends State<SearchSongs> {
           ),
           Container(
             width: size.width * 0.3,
-            color: Colors.blue,
+            // color: Colors.blue,
+            padding: EdgeInsets.only(right: 15),
+            alignment: Alignment.centerRight,
+            child: Icon(
+              Icons.play_circle_outline,
+              color: Color.fromRGBO(119, 119, 119, 1),
+            ),
           )
         ],
       ),

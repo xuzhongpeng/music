@@ -36,13 +36,11 @@ class PlayerState extends State<Player> {
 
   @override
   void deactivate() {
-    audioPlayer.stop();
     super.deactivate();
   }
 
   @override
   void dispose() {
-    audioPlayer.release();
     super.dispose();
   }
 
@@ -97,6 +95,9 @@ class PlayerState extends State<Player> {
           this.isPlaying = true;
         });
       });
+    setState(() {
+      isPlaying = audioPlayer.state == AudioPlayerState.PLAYING;
+    });
   }
 
   @override
@@ -122,12 +123,12 @@ class PlayerState extends State<Player> {
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         new Text(
-          position == null ? "--:--" : _formatDuration(position),
+          position == null ? "00:00" : _formatDuration(position),
           key: Key(position.toString()),
           style: style,
         ),
         new Text(
-          duration == null ? "--:--" : _formatDuration(duration),
+          duration == null ? "00:00" : _formatDuration(duration),
           style: style,
         ),
       ],
