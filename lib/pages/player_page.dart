@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -39,11 +41,6 @@ class PlayerState extends State<Player> {
     super.deactivate();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   String _formatDuration(Duration d) {
     int minute = d.inMinutes;
     int second = (d.inSeconds > 60) ? (d.inSeconds % 60) : d.inSeconds;
@@ -52,6 +49,18 @@ class PlayerState extends State<Player> {
         ":" +
         ((second < 10) ? "0$second" : "$second");
     return format;
+  }
+
+  StreamSubscription<Duration> onDurationChanged;
+  StreamSubscription<Duration> onAudioPositionChanged;
+  StreamSubscription<void> onPlayerCompletion;
+  @override
+  dispose() {
+    super.dispose();
+    onDurationChanged.cancel();
+    onAudioPositionChanged.cancel();
+    onPlayerCompletion.cancel();
+    print('dispose');
   }
 
   @override
@@ -67,57 +76,61 @@ class PlayerState extends State<Player> {
     //   });
     // });
 
-    audioPlayer
-      ..onDurationChanged.listen((duration) {
-        setState(() {
-          this.duration = duration;
+    onDurationChanged = audioPlayer.onDurationChanged.listen((duration) {
+      setState(() {
+        this.duration = duration;
 
-          if (position != null) {
-            this.sliderValue = (position.inSeconds / duration.inSeconds);
-          }
-        });
-      })
-      ..onAudioPositionChanged.listen((position) {
-        setState(() {
-          this.position = position;
-
-          // if (panel != null) {
-          //   panel.handler(position.inSeconds);
-          // }
-
-          if (duration != null) {
-            this.sliderValue = (position.inSeconds / duration.inSeconds);
-          }
-        });
-      })
-      ..onPlayerCompletion.listen((_) {
-        setState(() {
-          this.isPlaying = true;
-        });
+        if (position != null) {
+          this.sliderValue = (position.inSeconds / duration.inSeconds);
+        }
       });
+    });
+    onAudioPositionChanged =
+        audioPlayer.onAudioPositionChanged.listen((position) {
+      setState(() {
+        this.position = position;
+
+        // if (panel != null) {
+        //   panel.handler(position.inSeconds);
+        // }
+
+        if (duration != null) {
+          this.sliderValue = (position.inSeconds / duration.inSeconds);
+        }
+      });
+    });
+    onPlayerCompletion = audioPlayer.onPlayerCompletion.listen((_) {
+      setState(() {
+        this.isPlaying = true;
+      });
+    });
     setState(() {
       isPlaying = audioPlayer.state == AudioPlayerState.PLAYING;
     });
   }
 
+  Color color = Colors.white;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: SafeArea(
-          child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: _controllers(context),
-          ),
-        ),
-      ),
+    return
+        // Scaffold(
+        //   body: Container(
+        //     color: Colors.white,
+        //     child: SafeArea(
+        //       child:
+        new Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: _controllers(context),
+      // ),
+      //   ),
+      // ),
     );
   }
 
   Widget _timer(BuildContext context) {
-    var style = new TextStyle(color: Colors.black);
+    var style = new TextStyle(color: color);
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
@@ -156,7 +169,7 @@ class PlayerState extends State<Player> {
               icon: new Icon(
                 Icons.skip_previous,
                 size: 32.0,
-                color: Colors.black,
+                color: color,
               ),
             ),
             new IconButton(
@@ -174,7 +187,7 @@ class PlayerState extends State<Player> {
               icon: new Icon(
                 isPlaying ? Icons.pause : Icons.play_arrow,
                 size: 48.0,
-                color: Colors.black,
+                color: color,
               ),
             ),
             new IconButton(
@@ -184,7 +197,7 @@ class PlayerState extends State<Player> {
               icon: new Icon(
                 Icons.skip_next,
                 size: 32.0,
-                color: Colors.black,
+                color: color,
               ),
             ),
           ],
@@ -200,7 +213,7 @@ class PlayerState extends State<Player> {
           }
         },
         value: sliderValue ?? 0.0,
-        activeColor: Colors.black,
+        activeColor: color,
       ),
       new Padding(
         padding: const EdgeInsets.symmetric(

@@ -3,13 +3,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:music/components/anims/needle_anim.dart';
 import 'package:music/components/anims/record_anim.dart';
+import 'package:music/model/music_model.dart';
 import 'package:music/pages/player_page.dart';
+import 'package:music/stores/store.dart';
 
 final GlobalKey<PlayerState> musicPlayerKey = new GlobalKey();
-
-const String coverArt =
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEKU9rkbdInt9fPTlJMjT_gbwlyBqbE60zELhHy_A2yMsJkBmDTw',
-    mp3Url = 'http://192.168.1.136:8080/123.mp3';
 
 class MusicPlayerExample extends StatefulWidget {
   @override
@@ -26,7 +24,7 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
   AnimationController controllerNeedle;
   final _rotateTween = new Tween<double>(begin: -0.15, end: 0.0);
   final _commonTween = new Tween<double>(begin: 0.0, end: 1.0);
-
+  MusicModel get _model => Store.value<MusicModel>(context);
   @override
   void initState() {
     super.initState();
@@ -58,7 +56,7 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
         new Container(
           decoration: new BoxDecoration(
             image: new DecorationImage(
-              image: new NetworkImage(coverArt),
+              image: new NetworkImage(_model.play?.headerImg ?? ''),
               fit: BoxFit.cover,
               colorFilter: new ColorFilter.mode(
                 Colors.black54,
@@ -87,7 +85,7 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
             elevation: 0.0,
             title: Container(
               child: Text(
-                'Shape of You - Ed Sheeran',
+                _model.play?.name ?? '',
                 style: new TextStyle(fontSize: 13.0),
               ),
             ),

@@ -8,8 +8,9 @@ import 'package:music/components/UI/music_list.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/model/music_model.dart';
 import 'package:music/model/player_model.dart';
-import 'package:music/pages/player_page.dart';
 import 'package:music/stores/store.dart';
+
+import 'mian_player.dart';
 
 class SearchSongs extends StatefulWidget {
   @override
@@ -47,17 +48,20 @@ class _SearchSongsState extends State<SearchSongs> {
                   },
                 ),
               ),
-              InputTypeGroup.customTextField(
-                  width: size.width * 0.75,
-                  placeHold: "搜索",
-                  controller: _controller,
-                  textFieldDidChanged: (text) {
-                    _model.search(text).then((songs) {
-                      setState(() {
-                        musics = songs;
+              Hero(
+                tag: 'search',
+                child: InputTypeGroup.customTextField(
+                    width: size.width * 0.75,
+                    placeHold: "搜索",
+                    controller: _controller,
+                    textFieldDidChanged: (text) {
+                      _model.search(text).then((songs) {
+                        setState(() {
+                          musics = songs;
+                        });
                       });
-                    });
-                  }),
+                    }),
+              ),
             ]),
           ),
           Expanded(
@@ -71,8 +75,10 @@ class _SearchSongsState extends State<SearchSongs> {
                         song.url =
                             Song.fromQQ(minUrl: await _model.getDetail(song));
                         _playModel.play(context, song);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => Player()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => MusicPlayerExample()));
                       },
                     ),
                   )

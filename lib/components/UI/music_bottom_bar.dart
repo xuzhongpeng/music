@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:music/components/iconfont/iconfont.dart';
 import 'package:music/model/music_model.dart';
 import 'package:music/model/player_model.dart';
+import 'package:music/pages/mian_player.dart';
 import 'package:music/stores/store.dart';
 
 class MusicBottomBar extends StatelessWidget {
@@ -22,19 +23,28 @@ class MusicBottomBar extends StatelessWidget {
                           width: 1, color: Color.fromRGBO(222, 226, 230, 1)))),
               child: Row(
                 children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(right: 10),
+                  GestureDetector(
                     child: Container(
-                        width: imgWidth,
-                        height: imgWidth,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black, width: 1),
-                            borderRadius: BorderRadius.circular(imgWidth / 2)),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(imgWidth / 2),
-                          child: Image.network(model.play?.headerImg,
-                              fit: BoxFit.cover),
-                        )),
+                      padding: EdgeInsets.only(right: 10),
+                      child: Container(
+                          width: imgWidth,
+                          height: imgWidth,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black, width: 1),
+                              borderRadius:
+                                  BorderRadius.circular(imgWidth / 2)),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(imgWidth / 2),
+                            child: Image.network(model.play?.headerImg,
+                                fit: BoxFit.cover),
+                          )),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => MusicPlayerExample()));
+                    },
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
