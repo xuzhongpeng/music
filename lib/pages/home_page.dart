@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/app_bar.dart';
+import 'package:music/components/UI/horizontal_song_list.dart';
 import 'package:music/components/UI/input_type_group.dart';
 import 'package:music/components/UI/music_bottom_bar.dart';
 import 'package:music/components/UI/page_route.dart';
@@ -59,20 +60,18 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          personalized != null
-              ? Container(
-                  color: Colors.blue,
-                  child: Column(
-                    children: personalized
-                        .map(
-                          (p) => Container(
-                              width: size.width / 3,
-                              child: Card(child: Image.network(p.picUrl))),
-                        )
-                        .toList(),
-                  ),
-                )
-              : Container()
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                HorizontalSongList(
+                  personalized: personalized,
+                ),
+                HorizontalSongList(
+                  personalized: personalized,
+                ),
+              ],
+            ),
+          ),
         ]),
       ),
       bottomNavigationBar: MusicBottomBar(),
