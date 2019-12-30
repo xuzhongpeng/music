@@ -3,7 +3,7 @@
  * @email: xuzhongpeng@foxmail.com
  * @Date: 2019-11-12 15:55:37
  * @LastEditors  : xuzhongpeng
- * @LastEditTime : 2019-12-25 19:41:06
+ * @LastEditTime : 2019-12-29 21:02:37
  * @Description: 输入组件封装
  */
 import 'dart:async';
@@ -25,6 +25,7 @@ class InputTypeGroup {
       Function(String) textFieldDidChanged,
       EdgeInsets margin,
       String placeHold,
+      VoidCallback onTap,
       List<TextInputFormatter> inputFormatters,
       double width,
       double height,
@@ -39,7 +40,7 @@ class InputTypeGroup {
     return Container(
       width: width,
       height: height ?? 30,
-      margin: margin ?? EdgeInsets.fromLTRB(0, 5, 20, 5),
+      margin: margin ?? EdgeInsets.fromLTRB(0, 5, 0, 5),
       alignment: Alignment.center,
       decoration: (decoration ??
           BoxDecoration(
@@ -51,6 +52,7 @@ class InputTypeGroup {
         enabled: enable ?? true,
         keyboardType: keyboardType ?? TextInputType.text,
         controller: controller,
+        onTap: onTap ?? null,
         textAlign: textAlian ?? TextAlign.left,
         autofocus: autofocus ?? false,
         textInputAction: textInputAction ?? null,

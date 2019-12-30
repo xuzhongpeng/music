@@ -3,7 +3,7 @@
  * @email: xuzhongpeng@foxmail.com
  * @Date: 2019-12-24 08:43:14
  * @LastEditors  : xuzhongpeng
- * @LastEditTime : 2019-12-24 09:11:32
+ * @LastEditTime : 2019-12-28 15:51:08
  * @Description: 旋转组件
  */
 import 'package:flutter/animation.dart';
@@ -38,7 +38,11 @@ class PivotTransition extends AnimatedWidget {
     return new Transform(
       transform: transform,
       alignment: alignment,
-      child: child,
+      child: child ??
+          new Container(
+            width: 100.0,
+            child: new Image.asset("lib/assets/play_needle.png"),
+          ),
     );
   }
 }

@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/input_type_group.dart';
+import 'package:music/components/UI/loading.dart';
 import 'package:music/components/UI/music_bottom_bar.dart';
 import 'package:music/components/UI/music_list.dart';
+import 'package:music/components/UI/page_route.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/model/music_model.dart';
 import 'package:music/model/player_model.dart';
@@ -18,12 +21,14 @@ class SearchSongs extends StatefulWidget {
 }
 
 class _SearchSongsState extends State<SearchSongs> {
-  MusicModel get _model => Store.value<MusicModel>(context);
+  PlayerModel get _model => Store.value<PlayerModel>(context);
   PlayerModel get _playModel => Store.value<PlayerModel>(context);
   String searchStr = '';
   TextEditingController _controller = TextEditingController();
-  List<Musics> musics = List();
-
+  List<MusicEntity> musics = List();
+  bool isLoad = false;
+  Timer timer;
+  //焦点
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -50,39 +55,49 @@ class _SearchSongsState extends State<SearchSongs> {
               ),
               Hero(
                 tag: 'search',
-                child: InputTypeGroup.customTextField(
-                    width: size.width * 0.75,
-                    placeHold: "搜索",
-                    controller: _controller,
-                    textFieldDidChanged: (text) {
-                      _model.search(text).then((songs) {
-                        setState(() {
-                          musics = songs;
+                child: Material(
+                  child: InputTypeGroup.customTextField(
+                      width: size.width * 0.80,
+                      placeHold: "搜索",
+                      controller: _controller,
+                      autofocus: true,
+                      textFieldDidChanged: (text) {
+                        timer?.cancel();
+                        timer = new Timer(Duration(milliseconds: 500), () {
+                          // Loading().show(context: context);
+                          setState(() {
+                            isLoad = true;
+                          });
+                          _model.search(text).then((songs) {
+                            if (songs != null) {
+                              musics = songs;
+                            } else {
+                              musics = List();
+                            }
+                            setState(() {
+                              isLoad = false;
+                            });
+                          });
                         });
-                      });
-                    }),
+                      }),
+                ),
               ),
             ]),
           ),
           Expanded(
-            child: ListView(
-              children: musics
-                  .map(
-                    (song) => GestureDetector(
-                      child: MusicList(song: song),
-                      onTap: () async {
-                        print(Platform.isAndroid);
-                        song.url =
-                            Song.fromQQ(minUrl: await _model.getDetail(song));
-                        _playModel.play(context, song);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => MusicPlayerExample()));
-                      },
-                    ),
-                  )
-                  .toList(),
+            child: Loading().GMLoading(
+              show: isLoad,
+              color: Color.fromRGBO(20, 21, 21, 0),
+              child: MusicList(
+                musics: musics,
+                onTap: (MusicEntity song) async {
+                  print(Platform.isAndroid);
+                  song.url = Song.fromQQ(minUrl: await _model.getDetail(song));
+                  await _playModel.playing(song);
+                  Navigator.push(
+                      context, FadeRoute(page: MusicPlayerExample()));
+                },
+              ),
             ),
           ),
         ]),

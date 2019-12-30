@@ -3,12 +3,13 @@
  * @email: xuzhongpeng@foxmail.com
  * @Date: 2019-12-24 08:43:14
  * @LastEditors  : xuzhongpeng
- * @LastEditTime : 2019-12-27 13:04:54
+ * @LastEditTime : 2019-12-29 22:21:52
  * @Description: 播放器页面
  */
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:music/model/music_model.dart';
+import 'package:music/model/player_model.dart';
 import 'package:music/stores/store.dart';
 
 class RotateRecord extends AnimatedWidget {
@@ -23,7 +24,7 @@ class RotateRecord extends AnimatedWidget {
       width: 250.0,
       child: new RotationTransition(
           turns: animation,
-          child: Store.connect<MusicModel>(builder: (_, model, __) {
+          child: Store.connect<PlayerModel>(builder: (_, model, __) {
             return new Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,

@@ -10,87 +10,125 @@ class MusicBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double imgWidth = 35;
-    return Store.connect<MusicModel>(builder: (context, model, _) {
-      PlayerModel _playModel = Store.value<PlayerModel>(context);
-      return model.play != null
+    return Store.connect<PlayerModel>(builder: (context, _playModel, _) {
+      return _playModel.play != null
           ? Container(
               height: 60,
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(0),
               decoration: BoxDecoration(
                   color: Color.fromRGBO(250, 250, 250, 1),
                   border: Border(
                       top: BorderSide(
                           width: 1, color: Color.fromRGBO(222, 226, 230, 1)))),
-              child: Row(
+              child: Column(
                 children: <Widget>[
-                  GestureDetector(
-                    child: Container(
-                      padding: EdgeInsets.only(right: 10),
-                      child: Container(
-                          width: imgWidth,
-                          height: imgWidth,
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black, width: 1),
-                              borderRadius:
-                                  BorderRadius.circular(imgWidth / 2)),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(imgWidth / 2),
-                            child: Image.network(model.play?.headerImg,
-                                fit: BoxFit.cover),
-                          )),
+                  SizedBox(
+                    height: 2,
+                    width: MediaQuery.of(context).size.width,
+                    child: LinearProgressIndicator(
+                      backgroundColor: Colors.grey[100],
+                      valueColor: AlwaysStoppedAnimation(Colors.blue),
+                      value: _playModel.sliderValue ?? 0.0,
                     ),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => MusicPlayerExample()));
-                    },
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: <Widget>[
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        height: 25,
-                        child: Text(model.play?.name ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 1),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300)),
+                      GestureDetector(
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          padding: EdgeInsets.only(right: 10),
+                          child: Hero(
+                            tag: _playModel.play?.id ?? "image",
+                            child: Material(
+                              child: Container(
+                                  width: imgWidth,
+                                  height: imgWidth,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.white, width: 1),
+                                      borderRadius:
+                                          BorderRadius.circular(imgWidth / 2)),
+                                  child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.circular(imgWidth / 2),
+                                    child: Image.network(
+                                        _playModel.play?.headerImg,
+                                        fit: BoxFit.cover),
+                                  )),
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => MusicPlayerExample()));
+                        },
                       ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        height: 15,
-                        child: Text(model.play?.singer ?? '',
-                            style: TextStyle(
-                                color: Color.fromRGBO(119, 119, 119, 1),
-                                fontSize: 10)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            height: 25,
+                            child: Text(_playModel.play?.name ?? '',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: Color.fromRGBO(0, 0, 0, 1),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w300)),
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            height: 15,
+                            child: Text(_playModel.play?.singer ?? '',
+                                style: TextStyle(
+                                    color: Color.fromRGBO(119, 119, 119, 1),
+                                    fontSize: 10)),
+                          )
+                        ],
+                      ),
+                      Expanded(
+                        child: Container(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              padding: EdgeInsets.only(right: 20),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  new IconButton(
+                                    iconSize: 35,
+                                    onPressed: () {
+                                      //next
+                                      _playModel.next();
+                                    },
+                                    icon: new Icon(
+                                      Icons.skip_next,
+                                      color: Color.fromRGBO(119, 119, 119, 1),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(_playModel.audioPlayer.state ==
+                                            AudioPlayerState.PLAYING
+                                        ? IconFont.iconzanting
+                                        : IconFont.iconbofang),
+                                    color: Color.fromRGBO(119, 119, 119, 1),
+                                    iconSize: 30,
+                                    onPressed: () {
+                                      if (_playModel.audioPlayer.state ==
+                                          AudioPlayerState.PLAYING) {
+                                        _playModel.pause();
+                                      } else {
+                                        _playModel.resume();
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                            )),
                       )
                     ],
-                  ),
-                  Expanded(
-                    child: Container(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          padding: EdgeInsets.only(right: 20),
-                          child: IconButton(
-                            icon: Icon(_playModel.audioPlayer.state ==
-                                    AudioPlayerState.PLAYING
-                                ? IconFont.iconzanting
-                                : IconFont.iconbofang),
-                            color: Color.fromRGBO(119, 119, 119, 1),
-                            iconSize: 30,
-                            onPressed: () {
-                              if (_playModel.audioPlayer.state ==
-                                  AudioPlayerState.PLAYING) {
-                                _playModel.pause();
-                              } else {
-                                _playModel.resume();
-                              }
-                            },
-                          ),
-                        )),
                   )
                 ],
               ),

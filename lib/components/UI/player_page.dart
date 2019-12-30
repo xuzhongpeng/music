@@ -20,20 +20,21 @@ class Player extends StatefulWidget {
 
 class PlayerState extends State<Player> {
   PlayerModel get _playerModel => Store.value<PlayerModel>(context);
-  AudioPlayer audioPlayer;
-  bool isPlaying = false;
-  AudioCache audioCache = AudioCache();
-  Duration duration;
-  Duration position;
-  double sliderValue;
+  // AudioPlayer audioPlayer;
+  // bool isPlaying = false;
+  // Duration duration;
+  // Duration position;
+  // double sliderValue;
   // Lyric lyric;
   // LyricPanel panel;
-  PositionChangeHandler handler;
+  // PositionChangeHandler handler;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   init();
+    // });
   }
 
   @override
@@ -51,63 +52,64 @@ class PlayerState extends State<Player> {
     return format;
   }
 
-  StreamSubscription<Duration> onDurationChanged;
-  StreamSubscription<Duration> onAudioPositionChanged;
-  StreamSubscription<void> onPlayerCompletion;
-  @override
-  dispose() {
-    super.dispose();
-    onDurationChanged.cancel();
-    onAudioPositionChanged.cancel();
-    onPlayerCompletion.cancel();
-    print('dispose');
-  }
+  // StreamSubscription<Duration> onDurationChanged;
+  // StreamSubscription<Duration> onAudioPositionChanged;
+  // StreamSubscription<void> onPlayerCompletion;
+  // @override
+  // dispose() {
+  //   super.dispose();
+  //   onDurationChanged.cancel();
+  //   onAudioPositionChanged.cancel();
+  //   onPlayerCompletion.cancel();
+  //   print('dispose');
+  // }
 
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    audioPlayer = _playerModel.audioPlayer;
-    // Utils.getLyricFromTxt().then((Lyric lyric) {
-    //   print("getLyricFromTxt:" + lyric.slices.length.toString());
-    //   setState(() {
-    //     this.lyric = lyric;
-    //     panel = new LyricPanel(this.lyric);
-    //   });
-    // });
+  // @override
+  // void init() {
+  //   // TODO: implement didChangeDependencies
+  //   audioPlayer = _playerModel.audioPlayer;
+  //   // Utils.getLyricFromTxt().then((Lyric lyric) {
+  //   //   print("getLyricFromTxt:" + lyric.slices.length.toString());
+  //   //   setState(() {
+  //   //     this.lyric = lyric;
+  //   //     panel = new LyricPanel(this.lyric);
+  //   //   });
+  //   // });
 
-    onDurationChanged = audioPlayer.onDurationChanged.listen((duration) {
-      setState(() {
-        this.duration = duration;
+  //   onDurationChanged =
+  //       _playerModel.audioPlayer.onDurationChanged.listen((duration) {
+  //     setState(() {
+  //       this.duration = duration;
 
-        if (position != null) {
-          this.sliderValue = (position.inSeconds / duration.inSeconds);
-        }
-      });
-    });
-    onAudioPositionChanged =
-        audioPlayer.onAudioPositionChanged.listen((position) {
-      setState(() {
-        this.position = position;
+  //       if (position != null) {
+  //         this.sliderValue = (position.inSeconds / duration.inSeconds);
+  //       }
+  //     });
+  //   });
+  //   onAudioPositionChanged =
+  //       _playerModel.audioPlayer.onAudioPositionChanged.listen((position) {
+  //     setState(() {
+  //       this.position = position;
 
-        // if (panel != null) {
-        //   panel.handler(position.inSeconds);
-        // }
+  //       // if (panel != null) {
+  //       //   panel.handler(position.inSeconds);
+  //       // }
 
-        if (duration != null) {
-          this.sliderValue = (position.inSeconds / duration.inSeconds);
-        }
-      });
-    });
-    onPlayerCompletion = audioPlayer.onPlayerCompletion.listen((_) {
-      setState(() {
-        this.isPlaying = true;
-      });
-    });
-    setState(() {
-      isPlaying = audioPlayer.state == AudioPlayerState.PLAYING;
-    });
-  }
+  //       if (duration != null) {
+  //         this.sliderValue = (position.inSeconds / duration.inSeconds);
+  //       }
+  //     });
+  //   });
+  //   onPlayerCompletion =
+  //       _playerModel.audioPlayer.onPlayerCompletion.listen((_) {
+  //     setState(() {
+  //       this.isPlaying = false;
+  //     });
+  //   });
+  //   setState(() {
+  //     isPlaying = _playerModel.audioPlayer.state == AudioPlayerState.PLAYING;
+  //   });
+  // }
 
   Color color = Colors.white;
 
@@ -136,12 +138,16 @@ class PlayerState extends State<Player> {
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         new Text(
-          position == null ? "00:00" : _formatDuration(position),
-          key: Key(position.toString()),
+          _playerModel.position == null
+              ? "00:00"
+              : _formatDuration(_playerModel.position),
+          key: Key(_playerModel.position.toString()),
           style: style,
         ),
         new Text(
-          duration == null ? "00:00" : _formatDuration(duration),
+          _playerModel.duration == null
+              ? "00:00"
+              : _formatDuration(_playerModel.duration),
           style: style,
         ),
       ],
@@ -165,38 +171,40 @@ class PlayerState extends State<Player> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             new IconButton(
-              onPressed: () {},
+              iconSize: 45,
+              onPressed: () {
+                _playerModel.last(context);
+              },
               icon: new Icon(
                 Icons.skip_previous,
-                size: 32.0,
+                // size: 45.0,
                 color: color,
               ),
             ),
             new IconButton(
+              iconSize: 60,
               onPressed: () async {
-                if (isPlaying) {
-                  audioPlayer.pause();
+                if (_playerModel.isPlaying) {
+                  _playerModel.pause();
                 } else {
-                  audioPlayer.resume();
+                  _playerModel.resume();
                 }
-                setState(() {
-                  isPlaying = !isPlaying;
-                });
               },
               padding: const EdgeInsets.all(0.0),
               icon: new Icon(
-                isPlaying ? Icons.pause : Icons.play_arrow,
-                size: 48.0,
+                _playerModel.isPlaying ? Icons.pause : Icons.play_arrow,
+                // size: 60.0,
                 color: color,
               ),
             ),
             new IconButton(
+              iconSize: 45,
               onPressed: () {
                 //next
+                _playerModel.next();
               },
               icon: new Icon(
                 Icons.skip_next,
-                size: 32.0,
                 color: color,
               ),
             ),
@@ -204,15 +212,11 @@ class PlayerState extends State<Player> {
         ),
       ),
       new Slider(
-        key: Key(sliderValue.toString()),
+        key: Key(_playerModel.sliderValue.toString()),
         onChanged: (newValue) {
-          if (duration != null) {
-            int seconds = (duration.inSeconds * newValue).round();
-            print("audioPlayer.seek: $seconds");
-            audioPlayer.seek(new Duration(seconds: seconds));
-          }
+          _playerModel.seek(newValue);
         },
-        value: sliderValue ?? 0.0,
+        value: _playerModel.sliderValue ?? 0.0,
         activeColor: color,
       ),
       new Padding(
