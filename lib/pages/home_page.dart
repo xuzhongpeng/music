@@ -3,7 +3,9 @@ import 'package:music/components/UI/app_bar.dart';
 import 'package:music/components/UI/input_type_group.dart';
 import 'package:music/components/UI/music_bottom_bar.dart';
 import 'package:music/components/UI/page_route.dart';
+import 'package:music/entities/personalized.dart';
 import 'package:music/pages/search_songs.dart';
+import 'package:music/services/songs_service.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,6 +13,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Personalized> personalized;
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  init() async {
+    List list = await SongService().getSongList();
+    personalized = list.map((m) => Personalized.fromJson(m)).toList();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -44,7 +59,20 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Container(width: size.width, height: 100, color: Colors.blue)
+          personalized != null
+              ? Container(
+                  color: Colors.blue,
+                  child: Column(
+                    children: personalized
+                        .map(
+                          (p) => Container(
+                              width: size.width / 3,
+                              child: Card(child: Image.network(p.picUrl))),
+                        )
+                        .toList(),
+                  ),
+                )
+              : Container()
         ]),
       ),
       bottomNavigationBar: MusicBottomBar(),

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:music/config/http.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/services/urls.dart';
@@ -34,6 +35,21 @@ class SongService {
       return null;
     }
   }
-  //获取歌单
 
+  //获取歌单
+  Future<List> getSongList() async {
+    Response res = await Http().dio.get(
+          "${Urls.m123}/personalized",
+        );
+    if (res != null && res.data != null) {
+      if (res.data['code'] == 200) {
+        return res.data['result'];
+      } else {
+        //出错
+        throw FlutterError("获取歌单出错");
+      }
+    } else {
+      return null;
+    }
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music/entities/musics.dart';
+import 'package:music/entities/personalized.dart';
 import 'package:music/services/songs_service.dart';
 import 'package:music/stores/provider.dart';
 import 'package:music/utils/json_manager.dart';
@@ -166,7 +167,6 @@ class PlayerModel extends MuProvider {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _audioPlayer.dispose();
   }
