@@ -9,16 +9,14 @@ class FadeRoute extends PageRouteBuilder {
             Animation<double> animation,
             Animation<double> secondaryAnimation,
           ) =>
-              page,
-          transitionsBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-            Widget child,
-          ) =>
-              FadeTransition(
+              //     FadeTransition(
+              //   opacity: animation,
+              //   child: page,
+              // ),
+              new FadeTransition(
             opacity: animation,
-            child: child,
+            child: page,
           ),
+          transitionDuration: const Duration(milliseconds: 200),
         );
 }

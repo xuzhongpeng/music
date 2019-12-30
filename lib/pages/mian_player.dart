@@ -73,101 +73,107 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Container(
-          width: 30,
-          child: IconButton(
-            padding: EdgeInsets.all(4),
-            icon: Icon(
-              Icons.expand_more,
-              size: 22,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-      ),
-      body: Stack(
-        children: <Widget>[
-          Store.connect<PlayerModel>(
-            builder: (_, _model, __) => new Container(
-              decoration: new BoxDecoration(
-                  image: new DecorationImage(
-                image: new NetworkImage(_model.play?.headerImg ?? ''),
-                fit: BoxFit.cover,
-                colorFilter: new ColorFilter.mode(
-                  Colors.black54,
-                  BlendMode.overlay,
-                ),
-              )),
-            ),
-          ),
-          new Container(
-              child: new BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-            child: Opacity(
-              opacity: 0.6,
-              child: new Container(
-                decoration: new BoxDecoration(
-                  color: Colors.grey.shade900,
+        body: Column(
+      children: <Widget>[
+        Expanded(
+          child: Stack(
+            children: <Widget>[
+              Store.connect<PlayerModel>(
+                builder: (_, _model, __) => new Container(
+                  decoration: new BoxDecoration(
+                      image: new DecorationImage(
+                    image: new NetworkImage(_model.play?.headerImg ?? ''),
+                    fit: BoxFit.cover,
+                    colorFilter: new ColorFilter.mode(
+                      Colors.black54,
+                      BlendMode.overlay,
+                    ),
+                  )),
                 ),
               ),
-            ),
-          )),
-          new Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: new AppBar(
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              title: Container(
-                child: Store.connect<PlayerModel>(
-                  builder: (_, _model, __) => Text(
-                    _model.play?.name ?? '',
-                    style: new TextStyle(fontSize: 18.0),
+              new Container(
+                  child: new BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                child: Opacity(
+                  opacity: 0.6,
+                  child: new Container(
+                    decoration: new BoxDecoration(
+                      color: Colors.grey.shade900,
+                    ),
                   ),
                 ),
-              ),
-            ),
-            body: new Stack(
-              alignment: const FractionalOffset(0.5, 0.0),
-              children: <Widget>[
-                new Stack(
-                  alignment: const FractionalOffset(0.7, 0.1),
+              )),
+              new Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: new AppBar(
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0.0,
+                  title: Container(
+                    child: Store.connect<PlayerModel>(
+                      builder: (_, _model, __) => Text(
+                        _model.play?.name ?? '',
+                        style:
+                            new TextStyle(fontSize: 18.0, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  leading: Container(
+                    width: 30,
+                    height: 30,
+                    child: IconButton(
+                      padding: EdgeInsets.all(4),
+                      icon: Icon(
+                        Icons.expand_more,
+                        size: 22,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ),
+                body: new Stack(
+                  alignment: const FractionalOffset(0.5, 0.0),
                   children: <Widget>[
-                    new Container(
-                      child: Store.connect<PlayerModel>(
-                        builder: (_, _model, __) => Hero(
-                          tag: _model.play.id,
-                          child: Material(
-                            color: Color.fromRGBO(1, 1, 1, 0),
-                            child: RotateRecord(
-                                animation:
-                                    _commonTween.animate(controllerRecord)),
+                    new Stack(
+                      alignment: const FractionalOffset(0.7, 0.1),
+                      children: <Widget>[
+                        Store.connect<PlayerModel>(
+                          builder: (_, _model, __) => Hero(
+                            tag: _model.play.id,
+                            child: Material(
+                              color: Color.fromRGBO(1, 1, 1, 0),
+                              child: new Container(
+                                child: RotateRecord(
+                                    animation:
+                                        _commonTween.animate(controllerRecord)),
+                                margin: EdgeInsets.only(top: 100.0),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      margin: EdgeInsets.only(top: 100.0),
+                        new Container(
+                          child: new PivotTransition(
+                            turns: _rotateTween.animate(controllerNeedle),
+                            alignment: FractionalOffset.topLeft,
+                          ),
+                        ),
+                      ],
                     ),
-                    new Container(
-                      child: new PivotTransition(
-                        turns: _rotateTween.animate(controllerNeedle),
-                        alignment: FractionalOffset.topLeft,
-                      ),
+                    new Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: new Player(),
                     ),
                   ],
                 ),
-                new Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: new Player(),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ));
   }
 
   @override

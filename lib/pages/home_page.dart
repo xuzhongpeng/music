@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:music/components/UI/app_bar.dart';
 import 'package:music/components/UI/input_type_group.dart';
-import 'package:music/components/UI/loading.dart';
 import 'package:music/components/UI/music_bottom_bar.dart';
 import 'package:music/components/UI/page_route.dart';
-import 'package:music/model/music_model.dart';
-import 'package:music/model/player_model.dart';
 import 'package:music/pages/search_songs.dart';
-import 'package:music/stores/store.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,6 +17,13 @@ class _HomePageState extends State<HomePage> {
     // Store.value<PlayerModel>(context, listen: false).init();
     // Store.value<PlayerModel>(context, listen: false).init(context);
     return Scaffold(
+      appBar: GMAppBar(
+        title: 'Home',
+        leading: Container(
+          padding: EdgeInsets.only(left: 10),
+          child: Icon(Icons.menu),
+        ),
+      ),
       body: SafeArea(
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Container(

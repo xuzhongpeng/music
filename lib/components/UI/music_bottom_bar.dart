@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:music/components/UI/page_route.dart';
 import 'package:music/components/iconfont/iconfont.dart';
 import 'package:music/model/music_model.dart';
 import 'package:music/model/player_model.dart';
@@ -60,9 +61,7 @@ class MusicBottomBar extends StatelessWidget {
                         ),
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => MusicPlayerExample()));
+                              context, FadeRoute(page: MusicPlayerExample()));
                         },
                       ),
                       Column(

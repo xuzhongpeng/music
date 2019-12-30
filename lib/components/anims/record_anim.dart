@@ -3,7 +3,7 @@
  * @email: xuzhongpeng@foxmail.com
  * @Date: 2019-12-24 08:43:14
  * @LastEditors  : xuzhongpeng
- * @LastEditTime : 2019-12-29 22:21:52
+ * @LastEditTime : 2019-12-30 20:07:39
  * @Description: 播放器页面
  */
 import 'package:flutter/animation.dart';
@@ -18,20 +18,24 @@ class RotateRecord extends AnimatedWidget {
 
   Widget build(BuildContext context) {
     final Animation<double> animation = listenable;
+    double imgWidth = 250;
     return new Container(
       margin: new EdgeInsets.symmetric(vertical: 10.0),
-      height: 250.0,
-      width: 250.0,
+      height: imgWidth,
+      width: imgWidth,
       child: new RotationTransition(
           turns: animation,
-          child: Store.connect<PlayerModel>(builder: (_, model, __) {
-            return new Container(
+          child: Store.connect<PlayerModel>(builder: (_, _playModel, __) {
+            return Container(
+              width: imgWidth,
+              height: imgWidth,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: NetworkImage(model.play?.headerImg ??
-                      "https://images-na.ssl-images-amazon.com/images/I/51inO4DBH0L._SS500.jpg"),
-                ),
+                  border: Border.all(color: Colors.white, width: 1),
+                  borderRadius: BorderRadius.circular(imgWidth / 2)),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(imgWidth / 2),
+                child: Image.network(_playModel.play?.headerImg,
+                    fit: BoxFit.cover),
               ),
             );
           })),
