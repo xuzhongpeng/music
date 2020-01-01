@@ -91,11 +91,7 @@ class _SearchSongsState extends State<SearchSongs> {
               child: MusicList(
                 musics: musics,
                 onTap: (MusicEntity song) async {
-                  print(Platform.isAndroid);
-                  song.url = Song.fromQQ(minUrl: await _model.getDetail(song));
-                  await _playModel.playing(song);
-                  Navigator.push(
-                      context, FadeRoute(page: MusicPlayerExample()));
+                  _playModel.playingMusic(context, song);
                 },
               ),
             ),

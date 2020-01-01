@@ -65,7 +65,7 @@ class _GmAppBarState extends State<GMAppBar> {
   @override
   void initState() {
     super.initState();
-    _appCodes = [Colors.white, Colors.white];
+    _appCodes = [Colors.white10, Colors.white10];
   }
 
   @override

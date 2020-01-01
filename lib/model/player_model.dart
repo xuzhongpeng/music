@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:music/components/UI/page_route.dart';
 import 'package:music/entities/musics.dart';
+import 'package:music/pages/mian_player.dart';
+import 'package:music/services/q/songs_service.dart';
 import 'package:music/entities/personalized.dart';
-import 'package:music/services/songs_service.dart';
 import 'package:music/stores/provider.dart';
 import 'package:music/utils/json_manager.dart';
 
@@ -85,6 +87,13 @@ class PlayerModel extends MuProvider {
       next();
       notifyListeners();
     });
+  }
+
+  //播放新音乐+下载音乐链接
+  playingMusic(BuildContext context, MusicEntity song) async {
+    song.url = Song.fromQQ(minUrl: await getDetail(song));
+    await playing(song);
+    Navigator.push(context, FadeRoute(page: MusicPlayerExample()));
   }
 
   //播放新音乐

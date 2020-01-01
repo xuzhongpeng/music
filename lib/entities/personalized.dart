@@ -1,3 +1,11 @@
+/*
+ * @Author: xuzhongpeng
+ * @email: xuzhongpeng@foxmail.com
+ * @Date: 2019-12-30 20:52:52
+ * @LastEditors  : xuzhongpeng
+ * @LastEditTime : 2020-01-01 16:01:23
+ * @Description: 网易云音乐 推荐歌单
+ */
 class Personalized {
   int id;
   int type;

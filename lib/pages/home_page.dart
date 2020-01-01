@@ -5,8 +5,11 @@ import 'package:music/components/UI/input_type_group.dart';
 import 'package:music/components/UI/music_bottom_bar.dart';
 import 'package:music/components/UI/page_route.dart';
 import 'package:music/entities/personalized.dart';
+import 'package:music/entities/playlist.dart';
+import 'package:music/entities/q/diss_list.dart';
+import 'package:music/pages/play_list_detail.dart';
 import 'package:music/pages/search_songs.dart';
-import 'package:music/services/songs_service.dart';
+import 'package:music/services/q/songs_service.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,7 +17,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Personalized> personalized;
+  // List<Personalized> personalized;
+  List<PlayList> dissList;
   @override
   void initState() {
     super.initState();
@@ -22,8 +26,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   init() async {
-    List list = await SongService().getSongList();
-    personalized = list.map((m) => Personalized.fromJson(m)).toList();
+    List list = await SongService().getQSongList();
+    // personalized = list.map((m) => Personalized.fromJson(m)).toList();
+    dissList = list.map((m) => DissList.fromJson(m)).toList();
     setState(() {});
   }
 
@@ -64,10 +69,11 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: <Widget>[
                 HorizontalSongList(
-                  personalized: personalized,
-                ),
-                HorizontalSongList(
-                  personalized: personalized,
+                  personalized: dissList ?? [],
+                  callBack: (play) {
+                    Navigator.of(context)
+                        .push(FadeRoute(page: PlayListDetail(play: play)));
+                  },
                 ),
               ],
             ),

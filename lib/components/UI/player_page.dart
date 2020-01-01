@@ -132,7 +132,7 @@ class PlayerState extends State<Player> {
   }
 
   Widget _timer(BuildContext context) {
-    var style = new TextStyle(color: color);
+    var style = new TextStyle(color: color, fontSize: 13);
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
@@ -219,12 +219,15 @@ class PlayerState extends State<Player> {
         value: _playerModel.sliderValue ?? 0.0,
         activeColor: color,
       ),
-      new Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 8.0,
+      Container(
+        height: 40,
+        child: new Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 8.0,
+          ),
+          child: _timer(context),
         ),
-        child: _timer(context),
       ),
     ];
   }
