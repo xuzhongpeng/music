@@ -31,7 +31,7 @@ class MusicEntity {
   MusicEntity.fromJson(Map json) {
     name = json['name'];
     singer = json['singer'];
-    url = Song.fromJson(json['url']);
+    url = json['url'] != null ? Song.fromJson(json['url']) : null;
     id = json['id'];
     cid = json['cid'];
     medie = json['medie'];
@@ -48,7 +48,7 @@ class MusicEntity {
     Map<String, dynamic> map = Map();
     map['name'] = name;
     map['singer'] = singer;
-    map['url'] = url.toJson();
+    map['url'] = url?.toJson();
     map['id'] = id;
     map['cid'] = cid;
     map['medie'] = medie;

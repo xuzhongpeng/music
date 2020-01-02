@@ -89,24 +89,42 @@ class PlayerModel extends MuProvider {
     });
   }
 
-  //播放新音乐+下载音乐链接
-  playingMusic(BuildContext context, MusicEntity song) async {
+  //播放新音乐+下载音乐链接+
+  Future<void> playingMusic(MusicEntity song) async {
     song.url = Song.fromQQ(minUrl: await getDetail(song));
     await playing(song);
-    Navigator.push(context, FadeRoute(page: MusicPlayerExample()));
   }
 
   //播放新音乐
   Future<bool> playing(MusicEntity music) async {
     if (play != music) {
       await _audioPlayer.stop();
-      int result = await _audioPlayer.play(music.url.midUrl);
-      setPlayingSong(music);
-      notifyListeners();
-      return result == 1;
+      if (music.url == null) {
+        playingMusic(music);
+      } else {
+        int result = await _audioPlayer.play(music.url.midUrl);
+        setPlayingSong(music);
+        notifyListeners();
+        return result == 1;
+      }
     } else {
       return false;
     }
+  }
+
+  //添加播放列表
+  addPlayerList(List<MusicEntity> songList) {
+    if (songList.length > 0) {
+      _musics = songList;
+      JsonManager.saveMusicList(songList);
+      playingMusic(songList.first);
+    }
+  }
+
+  deleteMusic(MusicEntity music) {
+    _musics.remove(music);
+    JsonManager.saveMusicList(_musics);
+    notifyListeners();
   }
 
   //暂停

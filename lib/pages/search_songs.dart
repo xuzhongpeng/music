@@ -91,7 +91,9 @@ class _SearchSongsState extends State<SearchSongs> {
               child: MusicList(
                 musics: musics,
                 onTap: (MusicEntity song) async {
-                  _playModel.playingMusic(context, song);
+                  await _playModel.playingMusic(song);
+                  Navigator.push(
+                      context, FadeRoute(page: MusicPlayerExample()));
                 },
               ),
             ),

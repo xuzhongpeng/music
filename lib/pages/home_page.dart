@@ -4,6 +4,7 @@ import 'package:music/components/UI/horizontal_song_list.dart';
 import 'package:music/components/UI/input_type_group.dart';
 import 'package:music/components/UI/music_bottom_bar.dart';
 import 'package:music/components/UI/page_route.dart';
+import 'package:music/components/drawer/music_list.dart';
 import 'package:music/entities/personalized.dart';
 import 'package:music/entities/playlist.dart';
 import 'package:music/entities/q/diss_list.dart';
@@ -32,17 +33,25 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  GlobalKey<ScaffoldState> _globalKeyState = GlobalKey();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     // Store.value<PlayerModel>(context, listen: false).init();
     // Store.value<PlayerModel>(context, listen: false).init(context);
     return Scaffold(
+      key: _globalKeyState,
+      endDrawer: MusicListDrawer(),
       appBar: GMAppBar(
         title: 'Home',
         leading: Container(
           padding: EdgeInsets.only(left: 10),
-          child: Icon(Icons.menu),
+          child: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              _globalKeyState.currentState.openEndDrawer();
+            },
+          ),
         ),
       ),
       body: SafeArea(

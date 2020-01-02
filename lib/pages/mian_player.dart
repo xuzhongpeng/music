@@ -53,20 +53,25 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
         controllerRecord.forward();
       }
     });
-
+    judeState(
+        Store.value<PlayerModel>(context, listen: false).audioPlayer.state);
     stateStream = Store.value<PlayerModel>(context, listen: false)
         .audioPlayer
         .onPlayerStateChanged
         .listen((state) {
-      setState(() {
-        if (state == AudioPlayerState.PLAYING) {
-          controllerRecord.forward();
-          controllerNeedle.forward();
-        } else {
-          controllerRecord.stop(canceled: false);
-          controllerNeedle.reverse();
-        }
-      });
+      judeState(state);
+    });
+  }
+
+  judeState(AudioPlayerState state) {
+    setState(() {
+      if (state == AudioPlayerState.PLAYING) {
+        controllerRecord.forward();
+        controllerNeedle.forward();
+      } else {
+        controllerRecord.stop(canceled: false);
+        controllerNeedle.reverse();
+      }
     });
   }
 
