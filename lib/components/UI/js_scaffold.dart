@@ -8,8 +8,8 @@ import 'music_bottom_bar.dart';
 class JsScaffold extends StatefulWidget {
   final Widget body;
   final PreferredSizeWidget appBar;
-
-  JsScaffold({this.body, this.appBar});
+  final Widget drawer;
+  JsScaffold({this.body, this.appBar, this.drawer});
 
   @override
   _JsScaffoldState createState() => _JsScaffoldState();
@@ -29,6 +29,7 @@ class _JsScaffoldState extends State<JsScaffold> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: globalKeyState,
+      drawer: widget.drawer,
       endDrawer: MusicListDrawer(),
       bottomNavigationBar: MusicBottomBar(globalKeyState: globalKeyState),
       body: widget.body,

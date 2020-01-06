@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:music/config/http.dart';
 import 'package:music/entities/musics.dart';
+import 'package:music/entities/q/user_detail.dart';
 import 'package:music/services/urls.dart';
 
 class SongService {
@@ -53,13 +54,13 @@ class SongService {
   }
 
 //根据qq号获取歌单
-  Future<List> getQSongListByQQ({String qq = ""}) async {
+  Future<UserDetail> getQSongListByQQ({String qq = ""}) async {
     Response res = await Http()
         .dio
         .get('${Urls.qq}/user/detail', queryParameters: {"id": qq});
     if (res != null && res.data != null) {
       if (res.data['result'] == 100) {
-        return res.data['data']['list'];
+        return UserDetail.fromJson(res.data['data']);
       } else {
         //出错
         throw FlutterError("获取歌单出错");
