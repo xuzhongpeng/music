@@ -8,6 +8,8 @@ import 'package:music/pages/mian_player.dart';
 import 'package:music/stores/store.dart';
 
 class MusicBottomBar extends StatelessWidget {
+  final GlobalKey<ScaffoldState> globalKeyState;
+  MusicBottomBar({@required this.globalKeyState});
   @override
   Widget build(BuildContext context) {
     double imgWidth = 35;
@@ -121,6 +123,13 @@ class MusicBottomBar extends StatelessWidget {
                                       } else {
                                         _playModel.resume();
                                       }
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.menu),
+                                    onPressed: () {
+                                      globalKeyState.currentState
+                                          .openEndDrawer();
                                     },
                                   ),
                                 ],

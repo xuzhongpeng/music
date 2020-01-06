@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/app_bar.dart';
+import 'package:music/components/UI/js_scaffold.dart';
 import 'package:music/components/UI/music_bottom_bar.dart';
 import 'package:music/components/UI/music_list.dart';
 import 'package:music/components/iconfont/iconfont.dart';
@@ -11,7 +12,8 @@ import 'package:music/stores/store.dart';
 
 class PlayListDetail extends StatefulWidget {
   final PlayList play;
-  PlayListDetail({this.play});
+  final String heroKey;
+  PlayListDetail({this.play, this.heroKey});
   @override
   _PlayListDetailState createState() => _PlayListDetailState();
 }
@@ -49,22 +51,41 @@ class _PlayListDetailState extends State<PlayListDetail> {
             Navigator.of(context).pop();
           },
         ),
-        floating: true,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.menu,
+              color: Color.fromRGBO(1, 1, 1, 0),
+            ),
+            onPressed: () {},
+            tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+          )
+        ],
+        // floating: true,
         flexibleSpace: Stack(
           children: <Widget>[
-            Hero(
-              tag: widget.play.picUrl,
-              child: Material(
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.red,
-                  child: Image.network(
-                    widget.play.picUrl,
-                    fit: BoxFit.cover,
+            widget.heroKey != null
+                ? Hero(
+                    tag: widget.heroKey,
+                    child: Material(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.red,
+                        child: Image.network(
+                          widget.play.picUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.red,
+                    child: Image.network(
+                      widget.play.picUrl,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-              ),
-            ),
             Positioned(
               bottom: 5,
               right: 10,
@@ -113,11 +134,10 @@ class _PlayListDetailState extends State<PlayListDetail> {
         ),
         childCount: songList.length,
       )));
-    return Scaffold(
+    return JsScaffold(
       body: CustomScrollView(
         slivers: widgetList,
       ),
-      bottomNavigationBar: MusicBottomBar(),
     );
   }
 }

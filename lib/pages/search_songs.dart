@@ -4,12 +4,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/input_type_group.dart';
+import 'package:music/components/UI/js_scaffold.dart';
 import 'package:music/components/UI/loading.dart';
-import 'package:music/components/UI/music_bottom_bar.dart';
 import 'package:music/components/UI/music_list.dart';
 import 'package:music/components/UI/page_route.dart';
 import 'package:music/entities/musics.dart';
-import 'package:music/model/music_model.dart';
 import 'package:music/model/player_model.dart';
 import 'package:music/stores/store.dart';
 
@@ -32,7 +31,7 @@ class _SearchSongsState extends State<SearchSongs> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
+    return JsScaffold(
       body: SafeArea(
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Container(
@@ -100,7 +99,6 @@ class _SearchSongsState extends State<SearchSongs> {
           ),
         ]),
       ),
-      bottomNavigationBar: MusicBottomBar(),
     );
   }
 }

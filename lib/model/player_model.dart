@@ -23,6 +23,8 @@ class PlayerModel extends MuProvider {
   double sliderValue;
 
   //****************音乐相关 */
+
+  String qq = '1452754335';
   List<MusicEntity> _musics = List(); // 播放列表
   List<MusicEntity> get musics => _musics;
   MusicEntity _play; //当前播放

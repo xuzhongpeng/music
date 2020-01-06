@@ -37,9 +37,43 @@ class SongService {
   }
 
   //获取歌单（qq）
-  Future<List> getQSongList({String category = "10000000"}) async {
+  Future<List> getQSongList({int category = 10000000}) async {
     Response res = await Http().dio.get('${Urls.qq}/songlist/list',
         queryParameters: {"num": 10, "category": category});
+    if (res != null && res.data != null) {
+      if (res.data['result'] == 100) {
+        return res.data['data']['list'];
+      } else {
+        //出错
+        throw FlutterError("获取歌单出错");
+      }
+    } else {
+      return null;
+    }
+  }
+
+//根据qq号获取歌单
+  Future<List> getQSongListByQQ({String qq = ""}) async {
+    Response res = await Http()
+        .dio
+        .get('${Urls.qq}/user/detail', queryParameters: {"id": qq});
+    if (res != null && res.data != null) {
+      if (res.data['result'] == 100) {
+        return res.data['data']['list'];
+      } else {
+        //出错
+        throw FlutterError("获取歌单出错");
+      }
+    } else {
+      return null;
+    }
+  }
+
+  //根据qq号获取用户信息
+  Future<List> getUserInfo({String qq = ""}) async {
+    Response res = await Http()
+        .dio
+        .get('${Urls.qq}/user/detail', queryParameters: {"id": qq});
     if (res != null && res.data != null) {
       if (res.data['result'] == 100) {
         return res.data['data']['list'];
