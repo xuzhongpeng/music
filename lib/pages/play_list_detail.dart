@@ -37,6 +37,7 @@ class _PlayListDetailState extends State<PlayListDetail> {
   Widget build(BuildContext context) {
     List<Widget> widgetList = [
       SliverAppBar(
+        backgroundColor: Colors.black26,
         title: Text(
           widget.play.name,
           style: TextStyle(color: Colors.white),
@@ -84,8 +85,8 @@ class _PlayListDetailState extends State<PlayListDetail> {
                 : Container(
                     width: MediaQuery.of(context).size.width,
                     color: Colors.red,
-                    child: widget.play.picUrl != null &&
-                                widget.play.picUrl != ''
+                    child:
+                        widget.play.picUrl != null && widget.play.picUrl != ''
                             ? Image.network(
                                 widget.play.picUrl,
                                 fit: BoxFit.cover,
@@ -100,7 +101,7 @@ class _PlayListDetailState extends State<PlayListDetail> {
                   _playModel.addPlayerList(songList);
                 },
                 child: Container(
-                  padding: EdgeInsets.all(5),
+                  padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
                       color: Colors.black26,
                       borderRadius: BorderRadius.all(Radius.circular(10))),
