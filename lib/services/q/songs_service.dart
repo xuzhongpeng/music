@@ -108,6 +108,28 @@ class SongService {
     }
   }
 
+  //获取歌词
+  Future<String> getLyric(String id) async {
+    Response res = await Http()
+        .dio
+        .get('${Urls.qq}/lyric', queryParameters: {"songmid": id});
+    if (res != null && res.data != null) {
+      if (res.data['result'] == 100) {
+        if (res.data['data']['lyric'] != null) {
+          return res.data['data']['lyric'];
+        } else {
+          return null;
+        }
+      } else {
+        //出错
+        print("获取歌词出错");
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
   //获取歌单(网易云)
   Future<List> getSongList() async {
     Response res = await Http().dio.get(

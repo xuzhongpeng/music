@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music/entities/lyric.dart';
+import 'package:music/model/player_model.dart';
+import 'package:music/stores/store.dart';
 
 typedef void PositionChangeHandler(int second);
 
@@ -21,31 +23,64 @@ class LyricState extends State<LyricPanel> {
   @override
   void initState() {
     super.initState();
-    handler = ((position) {
-      // print("..handler" + position.toString());
-      LyricSlice slice = widget.lyric.slices[index];
-      if (position > slice.in_second) {
-        index++;
-        setState(() {
-          currentSlice = slice;
-        });
+    // handler = ((position) {
+    //   // print("..handler" + position.toString());
+
+    // });
+  }
+
+  void change() {
+    if (widget.lyric != null) {
+      try {
+        var _player = Store.value<PlayerModel>(context, listen: false);
+        if (_player.position.inSeconds < 3) {
+          index = 0;
+        }
+        LyricSlice slice = widget.lyric.slices[index];
+        if (_player.position.inSeconds > slice.in_second) {
+          index++;
+          setState(() {
+            currentSlice = slice;
+          });
+        }
+      } catch (e) {
+        print(e);
+        index = 0;
       }
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    change();
     return new Container(
       child: new Center(
         child: new Container(
-          padding: EdgeInsets.only(bottom: 10.0),
-          child: Text(
-            currentSlice != null ? currentSlice.slice : "",
-            style: new TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
+            padding: EdgeInsets.only(bottom: 10.0),
+            child: Column(
+              children: <Widget>[
+                Text(
+                  widget.lyric.slices.length > index
+                      ? widget.lyric.slices[index - 2].slice
+                      : "",
+                  style: new TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  currentSlice != null ? currentSlice.slice : "",
+                  style: new TextStyle(color: Colors.white, fontSize: 20),
+                ),
+                Text(
+                  widget.lyric.slices.length > index
+                      ? widget.lyric.slices[index].slice
+                      : "",
+                  style: new TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            )),
       ),
     );
   }

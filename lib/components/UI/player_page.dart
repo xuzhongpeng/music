@@ -4,6 +4,7 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/lyric_panel.dart';
+import 'package:music/entities/lyric.dart';
 import 'package:music/model/player_model.dart';
 import 'package:music/stores/store.dart';
 // import 'package:music/model/lyric.dart';
@@ -25,8 +26,7 @@ class PlayerState extends State<Player> {
   // Duration duration;
   // Duration position;
   // double sliderValue;
-  // Lyric lyric;
-  // LyricPanel panel;
+  LyricPanel panel;
   // PositionChangeHandler handler;
 
   @override
@@ -45,7 +45,6 @@ class PlayerState extends State<Player> {
   String _formatDuration(Duration d) {
     int minute = d.inMinutes;
     int second = (d.inSeconds > 60) ? (d.inSeconds % 60) : d.inSeconds;
-    print(d.inMinutes.toString() + "======" + d.inSeconds.toString());
     String format = ((minute < 10) ? "0$minute" : "$minute") +
         ":" +
         ((second < 10) ? "0$second" : "$second");
@@ -155,9 +154,10 @@ class PlayerState extends State<Player> {
   }
 
   List<Widget> _controllers(BuildContext context) {
-    print("_controllers");
     return [
-      // lyric != null ? panel : Container(),
+      _playerModel.play.lyric != null
+          ? new LyricPanel(_playerModel.play.lyric)
+          : Container(),
       Divider(color: Colors.transparent),
       Divider(
         color: Colors.transparent,

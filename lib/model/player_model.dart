@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/page_route.dart';
+import 'package:music/entities/lyric.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/pages/mian_player.dart';
 import 'package:music/services/q/songs_service.dart';
 import 'package:music/entities/personalized.dart';
 import 'package:music/stores/provider.dart';
+import 'package:music/utils.dart';
 import 'package:music/utils/json_manager.dart';
 
 class PlayerModel extends MuProvider {
@@ -106,6 +108,10 @@ class PlayerModel extends MuProvider {
       } else {
         int result = await _audioPlayer.play(music.url.midUrl);
         setPlayingSong(music);
+        Utils.getLyricFromTxt(music.cid).then((Lyric lyric) {
+          this.play.lyric = lyric;
+          notifyListeners();
+        });
         notifyListeners();
         return result == 1;
       }

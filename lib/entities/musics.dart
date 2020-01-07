@@ -1,4 +1,5 @@
 import 'from_type.dart';
+import 'lyric.dart';
 
 class MusicEntity {
   String name;
@@ -7,6 +8,7 @@ class MusicEntity {
   FromType from;
   String id;
   String cid;
+  Lyric lyric;
   String medie; //咪咕用
   String headerImg;
 
