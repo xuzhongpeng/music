@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/app_bar.dart';
+import 'package:music/components/UI/circle_image.dart';
 import 'package:music/components/UI/horizontal_song_list.dart';
 import 'package:music/components/UI/input_type_group.dart';
 import 'package:music/components/UI/js_scaffold.dart';
@@ -43,14 +44,19 @@ class _HomePageState extends State<HomePage> {
     Size size = MediaQuery.of(context).size;
     // Store.value<PlayerModel>(context, listen: false).init();
     // Store.value<PlayerModel>(context, listen: false).init(context);
+    double imgWidth = 100;
     return JsScaffold(
       appBar: GMAppBar(
         title: 'Home',
-        leading: Container(
-          padding: EdgeInsets.only(left: 10),
-          child: IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {},
+        leading: Builder(
+          builder: (context) => Container(
+            padding: EdgeInsets.only(left: 10),
+            child: IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            ),
           ),
         ),
       ),
@@ -62,66 +68,56 @@ class _HomePageState extends State<HomePage> {
                     accountEmail: Text(user.creator.uinWeb),
                     accountName: Text(user.creator.nick),
                     onDetailsPressed: () {},
-                    currentAccountPicture: CircleAvatar(
-                      backgroundImage: AssetImage('images/ab.jpg'),
-                    ),
+                    currentAccountPicture:
+                        CircleImage(child: user.creator.headpic),
                   ),
-                  ListTile(
-                    title: Text('ListTile1'),
-                    subtitle: Text(
-                      'ListSubtitle1',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    leading: CircleAvatar(child: Text("1")),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+                  ...user.mymusic
+                      .map(
+                        (music) => ListTile(
+                          title: Text(music.title),
+                          subtitle: Text(
+                            music.subtitle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          leading: CircleImage(
+                            child: music.laypic,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(FadeRoute(
+                                page: PlayListDetail(
+                                    play: PlayList(
+                                        id: music.id,
+                                        name: music.title,
+                                        picUrl: music.laypic))));
+                          },
+                        ),
+                      )
+                      .toList(),
                   Divider(), //分割线
-                  ListTile(
-                    title: Text('ListTile2'),
-                    subtitle: Text(
-                      'ListSubtitle2',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    leading: CircleAvatar(child: Text("2")),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Divider(), //分割线
-                  ListTile(
-                    title: Text('ListTile3'),
-                    subtitle: Text(
-                      'ListSubtitle3',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    leading: CircleAvatar(child: Text("3")),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Divider(), //分割线
-                  new AboutListTile(
-                    icon: new CircleAvatar(child: new Text("4")),
-                    child: new Text("AboutListTile"),
-                    applicationName: "AppName",
-                    applicationVersion: "1.0.1",
-                    applicationIcon: new Image.asset(
-                      'images/bb.jpg',
-                      width: 55.0,
-                      height: 55.0,
-                    ),
-                    applicationLegalese: "applicationLegalese",
-                    aboutBoxChildren: <Widget>[
-                      new Text("第一条..."),
-                      new Text("第二条...")
-                    ],
-                  ),
-                  Divider(), //分割线
+                  ...user.mydiss.list
+                      .map(
+                        (music) => ListTile(
+                          title: Text(music.title),
+                          subtitle: Text(
+                            music.subtitle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          leading: CircleImage(
+                            child: music.picurl,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(FadeRoute(
+                                page: PlayListDetail(
+                                    play: PlayList(
+                                        id: music.dissid.toString(),
+                                        name: music.title,
+                                        picUrl: music.picurl))));
+                          },
+                        ),
+                      )
+                      .toList(),
                 ],
               )
             : Container(),

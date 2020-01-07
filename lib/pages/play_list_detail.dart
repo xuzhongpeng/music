@@ -71,20 +71,26 @@ class _PlayListDetailState extends State<PlayListDetail> {
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         color: Colors.red,
-                        child: Image.network(
-                          widget.play.picUrl,
-                          fit: BoxFit.cover,
-                        ),
+                        child: widget.play.picUrl != null &&
+                                widget.play.picUrl != ''
+                            ? Image.network(
+                                widget.play.picUrl,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(),
                       ),
                     ),
                   )
                 : Container(
                     width: MediaQuery.of(context).size.width,
                     color: Colors.red,
-                    child: Image.network(
-                      widget.play.picUrl,
-                      fit: BoxFit.cover,
-                    ),
+                    child: widget.play.picUrl != null &&
+                                widget.play.picUrl != ''
+                            ? Image.network(
+                                widget.play.picUrl,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(),
                   ),
             Positioned(
               bottom: 5,
