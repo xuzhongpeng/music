@@ -5,7 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/lyric_panel.dart';
 import 'package:music/entities/lyric.dart';
-import 'package:music/model/player_model.dart';
+import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
 // import 'package:music/model/lyric.dart';
 // import 'package:music/utils.dart';
@@ -173,7 +173,7 @@ class PlayerState extends State<Player> {
             new IconButton(
               iconSize: 45,
               onPressed: () {
-                _playerModel.last(context);
+                _playerModel.last();
               },
               icon: new Icon(
                 Icons.skip_previous,

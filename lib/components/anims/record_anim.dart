@@ -8,8 +8,8 @@
  */
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:music/model/music_model.dart';
-import 'package:music/model/player_model.dart';
+import 'package:music/provider/music_model.dart';
+import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
 
 class RotateRecord extends AnimatedWidget {

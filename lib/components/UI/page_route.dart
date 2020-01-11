@@ -9,10 +9,6 @@ class FadeRoute extends PageRouteBuilder {
             Animation<double> animation,
             Animation<double> secondaryAnimation,
           ) =>
-              //     FadeTransition(
-              //   opacity: animation,
-              //   child: page,
-              // ),
               new FadeTransition(
             opacity: animation,
             child: page,

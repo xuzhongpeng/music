@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music/components/UI/app_bar.dart';
 import 'package:music/components/UI/circle_image.dart';
 import 'package:music/components/UI/horizontal_song_list.dart';
 import 'package:music/components/UI/input_type_group.dart';
 import 'package:music/components/UI/js_scaffold.dart';
-import 'package:music/components/UI/music_bottom_bar.dart';
 import 'package:music/components/UI/page_route.dart';
-import 'package:music/components/drawer/music_list.dart';
-import 'package:music/entities/personalized.dart';
 import 'package:music/entities/playlist.dart';
-import 'package:music/entities/q/diss_list.dart';
 import 'package:music/entities/q/user_detail.dart';
-import 'package:music/model/music_model.dart';
+import 'package:music/pages/lyric_page.dart';
 import 'package:music/pages/play_list_detail.dart';
 import 'package:music/pages/search_songs.dart';
+import 'package:music/provider/player_model.dart';
 import 'package:music/services/q/songs_service.dart';
 import 'package:music/stores/store.dart';
 import 'package:music/entities/classification.dart';
@@ -36,6 +34,7 @@ class _HomePageState extends State<HomePage> {
 
   init() async {
     user = await SongService().getQSongListByQQ(qq: "1452754335");
+    ScreenUtil.init(context);
     setState(() {});
   }
 
@@ -54,7 +53,13 @@ class _HomePageState extends State<HomePage> {
             child: IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
-                Scaffold.of(context).openDrawer();
+                Navigator.of(context).push(FadeRoute(
+                    page: LyricPage(
+                  lyric: Store.value<PlayerModel>(context, listen: false)
+                      .play
+                      .lyric,
+                )));
+                // Scaffold.of(context).openDrawer();
               },
             ),
           ),

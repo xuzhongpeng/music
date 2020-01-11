@@ -9,7 +9,7 @@ import 'package:music/components/UI/loading.dart';
 import 'package:music/components/UI/music_list.dart';
 import 'package:music/components/UI/page_route.dart';
 import 'package:music/entities/musics.dart';
-import 'package:music/model/player_model.dart';
+import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
 
 import 'mian_player.dart';

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:music/components/UI/player_page.dart';
 import 'package:music/components/anims/needle_anim.dart';
 import 'package:music/components/anims/record_anim.dart';
-import 'package:music/model/music_model.dart';
-import 'package:music/model/player_model.dart';
+import 'package:music/provider/music_model.dart';
+import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
 
 final GlobalKey<PlayerState> musicPlayerKey = new GlobalKey();

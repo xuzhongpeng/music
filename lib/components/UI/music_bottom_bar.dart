@@ -2,8 +2,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/page_route.dart';
 import 'package:music/components/iconfont/iconfont.dart';
-import 'package:music/model/music_model.dart';
-import 'package:music/model/player_model.dart';
+import 'package:music/provider/music_model.dart';
+import 'package:music/provider/player_model.dart';
 import 'package:music/pages/mian_player.dart';
 import 'package:music/stores/store.dart';
 
@@ -72,6 +72,7 @@ class MusicBottomBar extends StatelessWidget {
                           Container(
                             alignment: Alignment.centerLeft,
                             height: 25,
+                            width: 170,
                             child: Text(_playModel.play?.name ?? '',
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(

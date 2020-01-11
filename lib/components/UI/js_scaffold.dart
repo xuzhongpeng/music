@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music/components/drawer/music_list.dart';
 import 'package:music/stores/store.dart';
-import 'package:music/model/music_model.dart';
+import 'package:music/provider/music_model.dart';
 
 import 'music_bottom_bar.dart';
 

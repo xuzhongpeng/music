@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music/entities/lyric.dart';
-import 'package:music/model/player_model.dart';
+import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
 
 typedef void PositionChangeHandler(int second);
@@ -37,7 +37,7 @@ class LyricState extends State<LyricPanel> {
           index = 0;
         }
         LyricSlice slice = widget.lyric.slices[index];
-        if (_player.position.inSeconds > slice.in_second) {
+        if (_player.position.inSeconds > slice.startTime) {
           index++;
           setState(() {
             currentSlice = slice;

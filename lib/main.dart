@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music/config/http.dart';
-import 'package:music/model/player_model.dart';
+import 'package:music/provider/player_model.dart';
 import 'package:music/pages/home_page.dart';
 import 'package:music/stores/store.dart';
 
-import 'model/music_model.dart';
+import 'provider/music_model.dart';
 
 void main() {
   Http http = Http();

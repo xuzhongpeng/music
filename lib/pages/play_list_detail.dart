@@ -6,7 +6,7 @@ import 'package:music/components/UI/music_list.dart';
 import 'package:music/components/iconfont/iconfont.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/entities/playlist.dart';
-import 'package:music/model/player_model.dart';
+import 'package:music/provider/player_model.dart';
 import 'package:music/services/q/songs_service.dart';
 import 'package:music/stores/store.dart';
 

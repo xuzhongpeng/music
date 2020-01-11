@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:music/components/iconfont/iconfont.dart';
 import 'package:music/entities/musics.dart';
-import 'package:music/model/music_model.dart';
-import 'package:music/model/player_model.dart';
+import 'package:music/provider/music_model.dart';
+import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
 
 typedef Future<void> OnTapMusic(MusicEntity list);

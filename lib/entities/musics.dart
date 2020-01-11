@@ -45,6 +45,9 @@ class MusicEntity {
     } else {
       from = FromType.m163;
     }
+    if (json['lyric'] != null) {
+      lyric = Lyric.fromJson(json['lyric']);
+    }
   }
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = Map();
@@ -56,6 +59,7 @@ class MusicEntity {
     map['medie'] = medie;
     map['headerImg'] = headerImg;
     map['from'] = from.toString();
+    if (lyric != null) map['lyric'] = lyric.toJson();
     return map;
   }
 }
