@@ -16,9 +16,9 @@ class Application {
 }
 
 class LyricPage extends StatefulWidget {
-  LyricPage({this.lyric});
+  LyricPage({this.lyric, this.onTap});
   final Lyric lyric;
-
+  final VoidCallback onTap;
   @override
   _LyricPageState createState() => _LyricPageState();
 }
@@ -36,7 +36,8 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((call) {});
-    _lyricWidget = LyricWidget(widget.lyric, 1);
+
+    _lyricWidget = LyricWidget(widget.lyric, 0);
     dragEndFunc = () {
       if (_lyricWidget.isDragging) {
         setState(() {
@@ -47,19 +48,30 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
   }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    dragEndTimer.cancel();
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    print("didchagne**********");
+    _lyricWidget.lyric = widget.lyric;
+    _lyricWidget.curLine = 0;
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    dragEndTimer?.cancel();
+    _lyricOffsetYController?.dispose();
+    super.dispose();
+  }
+
+  TextStyle commonWhiteTextStyle = TextStyle(color: Colors.white);
   @override
   Widget build(BuildContext context) {
     Application.screenWidth = MediaQuery.of(context).size.width;
     Application.screenHeight = MediaQuery.of(context).size.height;
     Application.statusBarHeight = 100;
     return Scaffold(
-        backgroundColor: Colors.grey[800],
+        backgroundColor: Color.fromRGBO(1, 1, 1, 0),
         body: widget.lyric == null
             ? Container(
                 alignment: Alignment.center,
@@ -69,6 +81,7 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
                 ),
               )
             : GestureDetector(
+                onTap: widget.onTap,
                 onTapDown: _lyricWidget.isDragging
                     ? (e) {
                         if (e.localPosition.dx > 0 &&
@@ -99,7 +112,7 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
                   cancelDragTimer();
                 },
                 child: StreamBuilder<Duration>(
-                  stream: Store.value<PlayerModel>(context)
+                  stream: Store.value<PlayerModel>(context, listen: false)
                       .audioPlayer
                       .onAudioPositionChanged,
                   builder: (context, snapshot) {
@@ -112,7 +125,9 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
                         startLineAnim(curLine);
                       }
                       // 给 customPaint 赋值当前行
-                      _lyricWidget.curLine = 6;
+                      _lyricWidget.curLine = curLine;
+                      print("curLine**********" + curTime.toString());
+
                       return CustomPaint(
                         size: Size(
                             Application.screenWidth,
@@ -121,11 +136,33 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
                                 ScreenUtil().setWidth(150) -
                                 ScreenUtil().setWidth(50) -
                                 Application.statusBarHeight -
-                                ScreenUtil().setWidth(120)),
+                                ScreenUtil().setWidth(150)),
                         painter: _lyricWidget,
                       );
                     } else {
-                      return Container();
+                      var curTime =
+                          Store.value<PlayerModel>(context, listen: false)
+                              .position
+                              ?.inSeconds;
+                      // 获取当前在哪一行
+                      if (curTime == null) curTime = 0;
+                      int curLine =
+                          Utils.findLyricIndex(curTime, widget.lyric.slices);
+                      if (!_lyricWidget.isDragging) {
+                        startLineAnim(curLine);
+                      }
+                      // 给 customPaint 赋值当前行
+                      _lyricWidget.curLine = curLine;
+                      return CustomPaint(
+                          size: Size(
+                              Application.screenWidth,
+                              Application.screenHeight -
+                                  kToolbarHeight -
+                                  ScreenUtil().setWidth(150) -
+                                  ScreenUtil().setWidth(50) -
+                                  Application.statusBarHeight -
+                                  ScreenUtil().setWidth(150)),
+                          painter: _lyricWidget);
                     }
                   },
                 ),

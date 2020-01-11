@@ -26,7 +26,7 @@ class PlayerState extends State<Player> {
   // Duration duration;
   // Duration position;
   // double sliderValue;
-  LyricPanel panel;
+  // LyricPanel panel;
   // PositionChangeHandler handler;
 
   @override
@@ -155,9 +155,9 @@ class PlayerState extends State<Player> {
 
   List<Widget> _controllers(BuildContext context) {
     return [
-      _playerModel.play.lyric != null
-          ? new LyricPanel(_playerModel.play.lyric)
-          : Container(),
+      // _playerModel.play.lyric != null
+      //     ? new LyricPanel(_playerModel.play.lyric)
+      //     : Container(),
       Divider(color: Colors.transparent),
       Divider(
         color: Colors.transparent,

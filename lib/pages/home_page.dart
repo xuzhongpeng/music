@@ -53,12 +53,7 @@ class _HomePageState extends State<HomePage> {
             child: IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
-                Navigator.of(context).push(FadeRoute(
-                    page: LyricPage(
-                  lyric: Store.value<PlayerModel>(context, listen: false)
-                      .play
-                      .lyric,
-                )));
+                Navigator.of(context).push(FadeRoute(page: LyricPage()));
                 // Scaffold.of(context).openDrawer();
               },
             ),

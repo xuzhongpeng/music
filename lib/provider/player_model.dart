@@ -90,6 +90,8 @@ class PlayerModel extends MuProvider {
     JsonManager.savePlaying(_play);
   }
 
+  String n = "0";
+
   ///是否在播放
   bool isPlaying = false;
   initPlayer() {
@@ -101,6 +103,10 @@ class PlayerModel extends MuProvider {
     });
     //播放时间变化时
     audioPlayer.onAudioPositionChanged.listen((position) {
+      if (n != position.inSeconds.toString()) {
+        n = position.inSeconds.toString();
+        print('postion:' + position.inSeconds.toString());
+      }
       this.position = position;
       _changeSlider();
       notifyListeners();
@@ -132,7 +138,7 @@ class PlayerModel extends MuProvider {
       } else {
         int result = await _audioPlayer.play(music.url.midUrl);
         if (music.lyric == null) {
-          Utils.getLyricFromTxt(music.cid).then((Lyric lyric) {
+          getLyric(music).then((Lyric lyric) {
             music.lyric = lyric;
             notifyListeners();
           });
@@ -143,6 +149,14 @@ class PlayerModel extends MuProvider {
       }
     } else {
       return false;
+    }
+  }
+
+  Future<Lyric> getLyric(MusicEntity music) async {
+    if (music.lyric == null) {
+      return await Utils.getLyricFromTxt(music.cid);
+    } else {
+      return music.lyric;
     }
   }
 

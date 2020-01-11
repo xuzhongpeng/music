@@ -3,9 +3,12 @@ import 'dart:ui';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:music/components/UI/loading.dart';
+import 'package:music/components/UI/lyric_ui.dart';
 import 'package:music/components/UI/player_page.dart';
 import 'package:music/components/anims/needle_anim.dart';
 import 'package:music/components/anims/record_anim.dart';
+import 'package:music/pages/lyric_page.dart';
 import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
@@ -142,31 +145,7 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
                 body: new Stack(
                   alignment: const FractionalOffset(0.5, 0.0),
                   children: <Widget>[
-                    new Stack(
-                      alignment: const FractionalOffset(0.7, 0.1),
-                      children: <Widget>[
-                        Store.connect<PlayerModel>(
-                          builder: (_, _model, __) => Hero(
-                            tag: _model.play.id,
-                            child: Material(
-                              color: Color.fromRGBO(1, 1, 1, 0),
-                              child: new Container(
-                                child: RotateRecord(
-                                    animation:
-                                        _commonTween.animate(controllerRecord)),
-                                margin: EdgeInsets.only(top: 100.0),
-                              ),
-                            ),
-                          ),
-                        ),
-                        new Container(
-                          child: new PivotTransition(
-                            turns: _rotateTween.animate(controllerNeedle),
-                            alignment: FractionalOffset.topLeft,
-                          ),
-                        ),
-                      ],
-                    ),
+                    _body(),
                     new Padding(
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: new Player(),
@@ -179,6 +158,65 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
         ),
       ],
     ));
+  }
+
+  Widget bodyWidget() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          widget1 = lyricWidget();
+        });
+      },
+      child: new Stack(
+        alignment: const FractionalOffset(0.7, 0.1),
+        children: <Widget>[
+          Store.connect<PlayerModel>(
+            builder: (_, _model, __) => Hero(
+              tag: _model.play.id,
+              child: Material(
+                color: Color.fromRGBO(1, 1, 1, 0),
+                child: new Container(
+                  child: RotateRecord(
+                      animation: _commonTween.animate(controllerRecord)),
+                  margin: EdgeInsets.only(top: 100.0),
+                ),
+              ),
+            ),
+          ),
+          new Container(
+            child: new PivotTransition(
+              turns: _rotateTween.animate(controllerNeedle),
+              alignment: FractionalOffset.topLeft,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget lyricWidget() {
+    var _model = Store.value<PlayerModel>(context, listen: false);
+    if (_model.play.lyric != null) {
+      return Store.connect<PlayerModel>(
+          builder: (_, _model, __) => LyricPage(
+                lyric: _model.play.lyric,
+                onTap: () {
+                  setState(() {
+                    widget1 = bodyWidget();
+                  });
+                },
+              ));
+    } else {
+      return Loading().defaultLoadingIndicator();
+    }
+  }
+
+  Widget widget1;
+  _body() {
+    if (widget1 == null) {
+      widget1 = bodyWidget();
+    }
+    return widget1;
   }
 
   @override

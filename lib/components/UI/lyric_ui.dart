@@ -5,11 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music/entities/lyric.dart';
 
-TextStyle smallGrayTextStyle = TextStyle(color: Colors.grey[400]);
-TextStyle commonGrayTextStyle = TextStyle(color: Colors.grey[200]);
-TextStyle commonWhiteTextStyle = TextStyle(color: Colors.white);
-TextStyle commonWhite70TextStyle = TextStyle(color: Colors.white70);
-
 class LyricWidget extends CustomPainter with ChangeNotifier {
   Lyric lyric;
   List<TextPainter> lyricPaints = []; // 其他歌词
@@ -23,7 +18,14 @@ class LyricWidget extends CustomPainter with ChangeNotifier {
   int dragLineTime;
 
   get offsetY => _offsetY;
-
+  //时间颜色
+  TextStyle smallGrayTextStyle = TextStyle(color: Colors.grey[400]);
+  //歌词颜色
+  TextStyle commonGrayTextStyle = TextStyle(color: Colors.grey[350]);
+  //当前行颜色
+  TextStyle commonWhiteTextStyle = TextStyle(color: Colors.white);
+  //拖动状态颜色
+  TextStyle commonWhite70TextStyle = TextStyle(color: Colors.white70);
   set offsetY(double value) {
     // 判断如果是在拖动状态下
     if (isDragging) {
@@ -47,7 +49,7 @@ class LyricWidget extends CustomPainter with ChangeNotifier {
 
   LyricWidget(this.lyric, this.curLine) {
     linePaint = Paint()
-      ..color = Colors.white12
+      ..color = Color.fromRGBO(1, 1, 1, 0)
       ..strokeWidth = ScreenUtil().setWidth(1);
     lyricPaints.addAll(lyric.slices
         .map((l) => TextPainter(
