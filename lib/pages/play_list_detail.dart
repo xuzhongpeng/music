@@ -13,7 +13,8 @@ import 'package:music/stores/store.dart';
 class PlayListDetail extends StatefulWidget {
   final PlayList play;
   final String heroKey;
-  PlayListDetail({this.play, this.heroKey});
+  final List<MusicEntity> songList;
+  PlayListDetail({this.play, this.heroKey, this.songList});
   @override
   _PlayListDetailState createState() => _PlayListDetailState();
 }
@@ -24,7 +25,11 @@ class _PlayListDetailState extends State<PlayListDetail> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    init();
+    if (widget.songList != null) {
+      songList = widget.songList;
+    } else {
+      init();
+    }
   }
 
   PlayerModel get _playModel => Store.value<PlayerModel>(context);

@@ -10,7 +10,7 @@ class JsonManager {
   //当前播放名
   static String _nowPlayer = "playing";
   //播放列表名
-  static String _musicList = "musicList";
+  static String _musicList = "musicData";
 
   //保存当前播放
   static savePlaying(MusicEntity music) async {
@@ -29,7 +29,7 @@ class JsonManager {
   }
 
   //保存播放列表
-  static saveMusicList(List<MusicEntity> musics) async {
+  static saveMusicList(Map<String, dynamic> map) async {
     String dir = (await getApplicationDocumentsDirectory()).path;
     File _file = await File('$dir/$_playerList').create(recursive: true);
     String content = _file.readAsStringSync();
@@ -39,9 +39,7 @@ class JsonManager {
     } catch (e) {
       json = Map();
     }
-    List list = musics.map((m) => m.toJson()).toList();
-
-    json[_musicList] = list;
+    json[_musicList] = map;
     _file.writeAsStringSync(jsonEncode(json));
   }
 
@@ -63,7 +61,7 @@ class JsonManager {
   }
 
   //获取播放列表
-  static Future<List<MusicEntity>> getMusicList() async {
+  static Future<Map<String, dynamic>> getMusicList() async {
     String dir = (await getApplicationDocumentsDirectory()).path;
     File _file = await File('$dir/$_playerList').create(recursive: true);
     String content = _file.readAsStringSync();
@@ -73,11 +71,9 @@ class JsonManager {
     } catch (e) {
       json = Map();
     }
-    if (json[_musicList] != null && json[_musicList] is List) {
-      List<MusicEntity> lists = List();
-      json[_musicList].forEach((list) => lists.add(MusicEntity.fromJson(list)));
-      return lists;
+    if (json[_musicList] != null && json[_musicList] is Map<String, dynamic>) {
+      return json;
     }
-    return [];
+    return {};
   }
 }

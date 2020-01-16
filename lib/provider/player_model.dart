@@ -30,9 +30,11 @@ class PlayerModel extends MuProvider {
 
   //****************音乐相关 */
 
-  String qq = '1452754335';
+  String qq;
   List<MusicEntity> _musics = List(); // 播放列表
+  List<MusicEntity> _love = List();
   List<MusicEntity> get musics => _musics;
+  List<MusicEntity> get love => _love;
   MusicEntity _play; //当前播放
   MusicEntity get play => _play;
 
@@ -45,7 +47,7 @@ class PlayerModel extends MuProvider {
     initNotification();
   }
   initMusic() async {
-    _musics = await JsonManager.getMusicList();
+    _parse(await JsonManager.getMusicList());
     String id = await JsonManager.getPlaying();
     List temp = _musics.where((test) {
       return id == test.id;
@@ -86,7 +88,7 @@ class PlayerModel extends MuProvider {
     _play = music;
     setNotification(isPlaying: true);
     if (_musics.where((m) => m.id == music.id).length == 0) _musics.add(music);
-    JsonManager.saveMusicList(_musics);
+    JsonManager.saveMusicList(_dataToJson());
     JsonManager.savePlaying(_play);
   }
 
@@ -103,10 +105,9 @@ class PlayerModel extends MuProvider {
     });
     //播放时间变化时
     audioPlayer.onAudioPositionChanged.listen((position) {
-      if (n != position.inSeconds.toString()) {
-        n = position.inSeconds.toString();
-        print('postion:' + position.inSeconds.toString());
-      }
+      // if (n != position.inSeconds.toString()) {
+      //   n = position.inSeconds.toString();
+      // }
       this.position = position;
       _changeSlider();
       notifyListeners();
@@ -126,7 +127,11 @@ class PlayerModel extends MuProvider {
   //播放新音乐+下载音乐链接+
   Future<void> playingMusic(MusicEntity song) async {
     song.url = Song.fromQQ(minUrl: await getDetail(song));
-    await playing(song);
+    if (song.url != null) {
+      await playing(song);
+    } else {
+      print('没有权限');
+    }
   }
 
   //播放新音乐
@@ -164,14 +169,14 @@ class PlayerModel extends MuProvider {
   addPlayerList(List<MusicEntity> songList) {
     if (songList.length > 0) {
       _musics = songList;
-      JsonManager.saveMusicList(songList);
+      JsonManager.saveMusicList(_dataToJson());
       playingMusic(songList.first);
     }
   }
 
   deleteMusic(MusicEntity music) {
     _musics.remove(music);
-    JsonManager.saveMusicList(_musics);
+    JsonManager.saveMusicList(_dataToJson());
     notifyListeners();
   }
 
@@ -265,5 +270,23 @@ class PlayerModel extends MuProvider {
   void dispose() {
     super.dispose();
     _audioPlayer.dispose();
+  }
+
+  //获取需要缓存的数据
+  Map<String, dynamic> _dataToJson() {
+    Map<String, dynamic> map = {};
+    map['qq'] = qq;
+    map['music'] = musics.map((m) => m.toJson()).toList();
+    map['love'] = love.map((m) => m.toJson()).toList();
+    return map;
+  }
+
+  //获取需要缓存的数据
+  _parse(Map<String, dynamic> map) {
+    qq = map['qq'];
+    if (map['music'] != null)
+      _musics = map['music'].map((m) => MusicEntity.fromJson(m)).toList();
+    if (map['love'] != null)
+      _love = map['love'].map((m) => MusicEntity.fromJson(m)).toList();
   }
 }

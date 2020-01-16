@@ -24,6 +24,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // List<Personalized> personalized;
   List<PlayList> dissList;
+  PlayerModel get model => Store.value<PlayerModel>(context, listen: false);
   List<PlayList> qqList;
   UserDetail user;
   @override
@@ -33,9 +34,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   init() async {
-    user = await SongService().getQSongListByQQ(qq: "1452754335");
-    ScreenUtil.init(context);
-    setState(() {});
+    Future.microtask(() async {
+      if (model.qq == null) {
+        _show((text) {
+          model.qq = text;
+          init();
+        });
+      } else {
+        user = await SongService().getQSongListByQQ(qq: model.qq);
+        ScreenUtil.init(context);
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -43,18 +53,17 @@ class _HomePageState extends State<HomePage> {
     Size size = MediaQuery.of(context).size;
     // Store.value<PlayerModel>(context, listen: false).init();
     // Store.value<PlayerModel>(context, listen: false).init(context);
-    double imgWidth = 100;
     return JsScaffold(
       appBar: GMAppBar(
-        title: 'Home',
+        title: "",
         leading: Builder(
           builder: (context) => Container(
             padding: EdgeInsets.only(left: 10),
             child: IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
-                Navigator.of(context).push(FadeRoute(page: LyricPage()));
-                // Scaffold.of(context).openDrawer();
+                // Navigator.of(context).push(FadeRoute(page: LyricPage()));
+                Scaffold.of(context).openDrawer();
               },
             ),
           ),
@@ -67,10 +76,34 @@ class _HomePageState extends State<HomePage> {
                   UserAccountsDrawerHeader(
                     accountEmail: Text(user.creator.uinWeb),
                     accountName: Text(user.creator.nick),
-                    onDetailsPressed: () {},
+                    onDetailsPressed: () {
+                      _show((text) {
+                        model.qq = text;
+                        init();
+                      });
+                    },
                     currentAccountPicture:
                         CircleImage(child: user.creator.headpic),
                   ),
+                  ListTile(
+                    title: Text('收藏'),
+                    subtitle: Text(
+                      model.love.length.toString() + "首歌曲",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    leading: CircleImage(
+                      child: user.creator.headpic,
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(FadeRoute(
+                          page: PlayListDetail(
+                              songList: model.love,
+                              play: PlayList(
+                                  name: "收藏", picUrl: user.creator.headpic))));
+                    },
+                  ),
+                  Divider(), //分割线
                   ...user.mymusic
                       .map(
                         (music) => ListTile(
@@ -158,5 +191,31 @@ class _HomePageState extends State<HomePage> {
         ]),
       ),
     );
+  }
+
+  _show(Function(String) callBack) {
+    showDialog(
+        context: context,
+        builder: (cxt) {
+          String qq = "";
+          return Center(
+            child: Column(children: [
+              Material(
+                child: TextField(
+                  onChanged: (text) {
+                    qq = text;
+                  },
+                ),
+              ),
+              RaisedButton(
+                child: Text('确定'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  callBack(qq);
+                },
+              )
+            ]),
+          );
+        });
   }
 }

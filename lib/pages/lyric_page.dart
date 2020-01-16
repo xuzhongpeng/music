@@ -126,7 +126,6 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
                       }
                       // 给 customPaint 赋值当前行
                       _lyricWidget.curLine = curLine;
-                      print("curLine**********" + curTime.toString());
 
                       return CustomPaint(
                         size: Size(
