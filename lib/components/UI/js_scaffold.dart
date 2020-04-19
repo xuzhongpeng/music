@@ -9,7 +9,8 @@ class JsScaffold extends StatefulWidget {
   final Widget body;
   final PreferredSizeWidget appBar;
   final Widget drawer;
-  JsScaffold({this.body, this.appBar, this.drawer});
+  final Color backgroundColor;
+  JsScaffold({this.body, this.appBar, this.drawer, this.backgroundColor});
 
   @override
   _JsScaffoldState createState() => _JsScaffoldState();
@@ -28,6 +29,8 @@ class _JsScaffoldState extends State<JsScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          widget.backgroundColor ?? Theme.of(context).backgroundColor,
       key: globalKeyState,
       drawer: widget.drawer,
       endDrawer: MusicListDrawer(),

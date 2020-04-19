@@ -8,6 +8,8 @@ import 'package:music/components/UI/lyric_ui.dart';
 import 'package:music/components/UI/player_page.dart';
 import 'package:music/components/anims/needle_anim.dart';
 import 'package:music/components/anims/record_anim.dart';
+import 'package:music/components/color/theme.dart';
+import 'package:music/components/neumorphism/shadow.dart';
 import 'package:music/pages/lyric_page.dart';
 import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
@@ -86,33 +88,33 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
         Expanded(
           child: Stack(
             children: <Widget>[
-              Store.connect<PlayerModel>(
-                builder: (_, _model, __) => new Container(
-                  decoration: new BoxDecoration(
-                      image: new DecorationImage(
-                    image: new NetworkImage(_model.play?.headerImg ?? ''),
-                    fit: BoxFit.cover,
-                    colorFilter: new ColorFilter.mode(
-                      Colors.black54,
-                      BlendMode.overlay,
-                    ),
-                  )),
-                ),
-              ),
-              new Container(
-                  child: new BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                child: Opacity(
-                  opacity: 0.6,
-                  child: new Container(
-                    decoration: new BoxDecoration(
-                      color: Colors.grey.shade900,
-                    ),
-                  ),
-                ),
-              )),
+              // Store.connect<PlayerModel>(
+              //   builder: (_, _model, __) => new Container(
+              //     decoration: new BoxDecoration(
+              //         image: new DecorationImage(
+              //       image: new NetworkImage(_model.play?.headerImg ?? ''),
+              //       fit: BoxFit.cover,
+              //       colorFilter: new ColorFilter.mode(
+              //         Colors.black54,
+              //         BlendMode.overlay,
+              //       ),
+              //     )),
+              //   ),
+              // ),
+              // new Container(
+              //     child: new BackdropFilter(
+              //   filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              //   child: Opacity(
+              //     opacity: 0.6,
+              //     child: new Container(
+              //       decoration: new BoxDecoration(
+              //         color: Colors.grey.shade900,
+              //       ),
+              //     ),
+              //   ),
+              // )),
               new Scaffold(
-                backgroundColor: Colors.transparent,
+                backgroundColor: JUTheme().theme.backgroundColor,
                 appBar: new AppBar(
                   automaticallyImplyLeading: false,
                   backgroundColor: Colors.transparent,
@@ -121,24 +123,25 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
                     child: Store.connect<PlayerModel>(
                       builder: (_, _model, __) => Text(
                         _model.play?.name ?? '',
-                        style:
-                            new TextStyle(fontSize: 18.0, color: Colors.white),
+                        style: new TextStyle(
+                            fontSize: 18.0,
+                            color: JUTheme().theme.textTheme.body1.color),
                       ),
                     ),
                   ),
                   leading: Container(
-                    width: 30,
-                    height: 30,
-                    child: IconButton(
-                      padding: EdgeInsets.all(4),
-                      icon: Icon(
-                        Icons.expand_more,
-                        size: 22,
-                        color: Colors.white,
+                    padding: EdgeInsets.all(10),
+                    child: OutShadow(
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.expand_more,
+                          size: 22,
+                          color: JUTheme().theme.primaryIconTheme.color,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
                     ),
                   ),
                 ),
@@ -161,6 +164,7 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
   }
 
   Widget bodyWidget() {
+    // return Container();
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -168,8 +172,11 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
         });
       },
       child: new Stack(
-        alignment: const FractionalOffset(0.7, 0.1),
+        alignment: Alignment.topCenter,
         children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width,
+          ),
           Store.connect<PlayerModel>(
             builder: (_, _model, __) => Hero(
               tag: _model.play.id,
@@ -187,6 +194,26 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
             child: new PivotTransition(
               turns: _rotateTween.animate(controllerNeedle),
               alignment: FractionalOffset.topLeft,
+            ),
+          ),
+          Positioned(
+            top: 400,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 400,
+              child: Store.connect<PlayerModel>(
+                builder: (_, _model, __) => _model.play.lyric != null
+                    ? LyricPage(
+                        height: 400,
+                        lyric: _model.play.lyric,
+                        onTap: () {
+                          setState(() {
+                            widget1 = lyricWidget();
+                          });
+                        },
+                      )
+                    : Container(),
+              ),
             ),
           ),
         ],

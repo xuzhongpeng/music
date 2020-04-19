@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music/components/UI/lyric_ui.dart';
+import 'package:music/components/color/theme.dart';
 import 'package:music/entities/lyric.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
@@ -16,7 +17,8 @@ class Application {
 }
 
 class LyricPage extends StatefulWidget {
-  LyricPage({this.lyric, this.onTap});
+  LyricPage({this.lyric, this.onTap, this.height});
+  final double height;
   final Lyric lyric;
   final VoidCallback onTap;
   @override
@@ -64,15 +66,20 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  TextStyle commonWhiteTextStyle = TextStyle(color: Colors.white);
+  TextStyle commonWhiteTextStyle =
+      TextStyle(color: JUTheme().theme.textTheme.body1.color);
   @override
   Widget build(BuildContext context) {
     Application.screenWidth = MediaQuery.of(context).size.width;
-    Application.screenHeight = MediaQuery.of(context).size.height;
+    Application.screenHeight = widget.height != null
+        ? widget.height
+        : MediaQuery.of(context).size.height;
     Application.statusBarHeight = 100;
     return Scaffold(
-        backgroundColor: Color.fromRGBO(1, 1, 1, 0),
-        body: widget.lyric == null
+        backgroundColor: JUTheme().theme.backgroundColor,
+        body: widget.lyric == null ||
+                widget.lyric.slices == null ||
+                widget.lyric.slices.length == 0
             ? Container(
                 alignment: Alignment.center,
                 child: Text(

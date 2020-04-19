@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music/components/iconfont/iconfont.dart';
+import 'package:music/components/neumorphism/shadow.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
@@ -13,7 +14,7 @@ class MusicList extends StatelessWidget {
   MusicList({this.musics, this.onTap});
   @override
   Widget build(BuildContext context) {
-    PlayerModel _model = Store.value<PlayerModel>(context);
+    // PlayerModel _model = Store.value<PlayerModel>(context);
     return ListView(
         children: musics
             .map((song) => GestureDetector(
@@ -37,27 +38,37 @@ class MusicItem extends StatelessWidget {
     PlayerModel _model = Store.value<PlayerModel>(context);
     return Container(
       width: size.width,
-      height: 60,
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 1, color: Color.fromRGBO(222, 226, 230, 1)))),
+      height: 80,
+      color: Colors.white10,
+      // decoration: BoxDecoration(
+      //     border: Border(
+      //         bottom: BorderSide(
+      //             width: 1,
+      //             color: Colors.white))), //Color.fromRGBO(222, 226, 230, 1)
       child: Row(
         children: <Widget>[
           Container(
-            width: size.width * 0.16,
+            width: size.width * 0.25,
             alignment: Alignment.center,
-            child: Container(
-              alignment: Alignment.center,
-              height: 35,
-              width: 35,
-              child: Image.network(song?.headerImg ?? "", fit: BoxFit.cover),
+            child: OutShadow(
+              radius: 10,
+              padding: EdgeInsets.all(0.5),
+              child: Container(
+                alignment: Alignment.center,
+                height: 60,
+                width: 60,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child:
+                      Image.network(song?.headerImg ?? "", fit: BoxFit.cover),
+                ),
+              ),
             ),
           ),
           Expanded(
             child: Container(
               // width: size.width * 0.5,
-              padding: EdgeInsets.only(left: 0),
+              padding: EdgeInsets.only(left: 0, top: 10),
               // color: Colors.red,
               child: Column(
                 children: <Widget>[
@@ -67,7 +78,7 @@ class MusicItem extends StatelessWidget {
                     child: Text(song.name,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            color: Color.fromRGBO(0, 0, 0, 1),
+                            // color: Color.fromRGBO(0, 0, 0, 1),
                             fontSize: 16,
                             fontWeight: FontWeight.w300)),
                   ),
@@ -76,7 +87,8 @@ class MusicItem extends StatelessWidget {
                     height: 20,
                     child: Text(song.singer,
                         style: TextStyle(
-                            color: Color.fromRGBO(119, 119, 119, 1),
+                            color: Theme.of(context).textTheme.body2.color,
+                            // color: Color.fromRGBO(119, 119, 119, 1),
                             fontSize: 12)),
                   )
                 ],
@@ -90,12 +102,19 @@ class MusicItem extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: Row(
                 children: <Widget>[
-                  Icon(
-                    _model.play?.id == song.id
-                        ? IconFont.iconzanting
-                        : IconFont.iconbofang,
-                    color: Color.fromRGBO(119, 119, 119, 1),
-                  ),
+                  _model.play?.id == song.id && _model.isPlaying
+                      ? InnerShadow(
+                          radius: 5,
+                          padding: EdgeInsets.all(8),
+                          child: Icon(IconFont.iconzanting,
+                              color: Theme.of(context).primaryIconTheme.color),
+                        )
+                      : OutShadow(
+                          radius: 5,
+                          padding: EdgeInsets.all(8),
+                          child: Icon(IconFont.iconbofang,
+                              color: Theme.of(context).primaryIconTheme.color),
+                        ),
                   trailing != null ? trailing : Container()
                 ],
               ))

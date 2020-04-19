@@ -4,6 +4,7 @@ import 'package:music/components/UI/js_scaffold.dart';
 import 'package:music/components/UI/music_bottom_bar.dart';
 import 'package:music/components/UI/music_list.dart';
 import 'package:music/components/iconfont/iconfont.dart';
+import 'package:music/components/neumorphism/shadow.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/entities/playlist.dart';
 import 'package:music/provider/player_model.dart';
@@ -108,18 +109,19 @@ class _PlayListDetailState extends State<PlayListDetail> {
                 child: Container(
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                      color: Colors.black26,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
                   child: Row(
                     children: <Widget>[
                       Icon(
                         IconFont.iconbofang,
-                        color: Colors.white,
+                        color: Theme.of(context).textTheme.body1.color,
                         size: 16,
                       ),
                       Text(
                         '播放全部',
-                        style: TextStyle(color: Colors.white),
+                        // style: TextStyle(color: Colors.grey[700]),
                       )
                     ],
                   ),

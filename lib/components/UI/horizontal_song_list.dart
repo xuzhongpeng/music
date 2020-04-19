@@ -3,6 +3,7 @@ import 'package:crypto/crypto.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:music/components/neumorphism/shadow.dart';
 import 'package:music/entities/classification.dart';
 import 'package:music/entities/playlist.dart';
 import 'package:music/entities/q/diss_list.dart';
@@ -42,7 +43,7 @@ class _HorizontalSongListState extends State<HorizontalSongList>
     super.build(context);
     double width = 120;
     return Container(
-      height: 200,
+      height: 195,
       child: Column(
         children: <Widget>[
           Row(
@@ -50,10 +51,13 @@ class _HorizontalSongListState extends State<HorizontalSongList>
             children: <Widget>[
               Container(
                 height: 30,
-                padding: EdgeInsets.only(left: 5),
+                padding: EdgeInsets.only(left: 15),
                 child: Text(
                   widget.type.name,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[500]),
                 ),
               ),
               Row(
@@ -80,11 +84,14 @@ class _HorizontalSongListState extends State<HorizontalSongList>
                               DateTime.now().microsecondsSinceEpoch.toString()))
                           .toString();
                       return GestureDetector(
-                        child: MusicItem(
-                            width: width,
-                            picUrl: p.picUrl,
-                            name: p.name,
-                            heroKey: heroKey),
+                        child: Container(
+                          margin: EdgeInsets.only(bottom: 15, left: 10),
+                          child: MusicItem(
+                              width: width,
+                              picUrl: p.picUrl,
+                              name: p.name,
+                              heroKey: heroKey),
+                        ),
                         onTap: () {
                           widget.callBack != null
                               ? widget.callBack(p, heroKey)
@@ -116,35 +123,47 @@ class MusicItem extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(0),
       width: width,
-      child: Column(
-        children: <Widget>[
-          new Container(
-            height: width - 10, //设置高度
-            width: width - 10,
-            child: Hero(
-              tag: heroKey,
-              child: Material(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.network(
-                    picUrl,
-                    fit: BoxFit.cover,
+      margin: EdgeInsets.only(top: 10),
+      // color: Colors.blue,
+      child: OutShadow(
+        radius: 10,
+        child: Column(
+          children: <Widget>[
+            new Container(
+              height: width - 35, //设置高度
+              width: width - 35,
+              margin: EdgeInsets.only(top: 15),
+              child: Hero(
+                tag: heroKey,
+                child: Material(
+                  child: OutShadow(
+                    radius: 10,
+                    child: Padding(
+                      padding: EdgeInsets.all(0.5),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          picUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 10),
-            width: width - 30,
-            child: Text(
-              name,
-              style: TextStyle(fontSize: 10),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-        ],
+            Container(
+              margin: EdgeInsets.all(10),
+              width: width - 30,
+              child: Text(
+                name,
+                style: TextStyle(fontSize: 10),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

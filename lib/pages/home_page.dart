@@ -6,6 +6,10 @@ import 'package:music/components/UI/horizontal_song_list.dart';
 import 'package:music/components/UI/input_type_group.dart';
 import 'package:music/components/UI/js_scaffold.dart';
 import 'package:music/components/UI/page_route.dart';
+import 'package:music/components/UI/sure_user_info.dart';
+import 'package:music/components/color/theme.dart';
+import 'package:music/components/drawer/user_info.dart';
+import 'package:music/components/neumorphism/shadow.dart';
 import 'package:music/entities/playlist.dart';
 import 'package:music/entities/q/user_detail.dart';
 import 'package:music/pages/lyric_page.dart';
@@ -36,13 +40,12 @@ class _HomePageState extends State<HomePage> {
   init() async {
     Future.microtask(() async {
       if (model.qq == null) {
-        _show((text) {
+        SureUserInfo.show(context, (text) {
           model.qq = text;
           init();
         });
       } else {
         user = await SongService().getQSongListByQQ(qq: model.qq);
-        ScreenUtil.init(context);
         setState(() {});
       }
     });
@@ -50,17 +53,27 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    JUTheme().init(context);
+    ScreenUtil.init(context);
     // Store.value<PlayerModel>(context, listen: false).init();
     // Store.value<PlayerModel>(context, listen: false).init(context);
     return JsScaffold(
+      // backgroundColor: Colors.grey[200],
       appBar: GMAppBar(
-        title: "",
+        title: "JSSHOU的音乐盒",
         leading: Builder(
           builder: (context) => Container(
             padding: EdgeInsets.only(left: 10),
             child: IconButton(
-              icon: Icon(Icons.menu),
+              icon: OutShadow(
+                padding: EdgeInsets.all(8),
+                radius: 5,
+                child: Icon(
+                  Icons.menu,
+                  size: 18,
+                  color: Theme.of(context).primaryIconTheme.color,
+                ),
+              ),
               onPressed: () {
                 // Navigator.of(context).push(FadeRoute(page: LyricPage()));
                 Scaffold.of(context).openDrawer();
@@ -68,154 +81,50 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
+        trailing: Builder(
+          builder: (context) => Container(
+            padding: EdgeInsets.only(right: 10),
+            child: IconButton(
+              icon: OutShadow(
+                padding: EdgeInsets.all(8),
+                radius: 5,
+                child: Icon(
+                  Icons.search,
+                  color: Theme.of(context).primaryIconTheme.color,
+                  size: 18,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(FadeRoute(page: SearchSongs()));
+              },
+            ),
+          ),
+        ),
       ),
-      drawer: Drawer(
-        child: user != null
-            ? ListView(
-                children: <Widget>[
-                  UserAccountsDrawerHeader(
-                    accountEmail: Text(user.creator.uinWeb),
-                    accountName: Text(user.creator.nick),
-                    onDetailsPressed: () {
-                      _show((text) {
-                        model.qq = text;
-                        init();
-                      });
-                    },
-                    currentAccountPicture:
-                        CircleImage(child: user.creator.headpic),
-                  ),
-                  ListTile(
-                    title: Text('收藏'),
-                    subtitle: Text(
-                      model.love.length.toString() + "首歌曲",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    leading: CircleImage(
-                      child: user.creator.headpic,
-                    ),
-                    onTap: () {
-                      Navigator.of(context).push(FadeRoute(
-                          page: PlayListDetail(
-                              songList: model.love,
-                              play: PlayList(
-                                  name: "收藏", picUrl: user.creator.headpic))));
-                    },
-                  ),
-                  Divider(), //分割线
-                  ...user.mymusic
-                      .map(
-                        (music) => ListTile(
-                          title: Text(music.title),
-                          subtitle: Text(
-                            music.subtitle,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          leading: CircleImage(
-                            child: music.laypic,
-                          ),
-                          onTap: () {
-                            Navigator.of(context).push(FadeRoute(
-                                page: PlayListDetail(
-                                    play: PlayList(
-                                        id: music.id,
-                                        name: music.title,
-                                        picUrl: music.laypic))));
-                          },
-                        ),
-                      )
-                      .toList(),
-                  Divider(), //分割线
-                  ...user.mydiss.list
-                      .map(
-                        (music) => ListTile(
-                          title: Text(music.title),
-                          subtitle: Text(
-                            music.subtitle,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          leading: CircleImage(
-                            child: music.picurl,
-                          ),
-                          onTap: () {
-                            Navigator.of(context).push(FadeRoute(
-                                page: PlayListDetail(
-                                    play: PlayList(
-                                        id: music.dissid.toString(),
-                                        name: music.title,
-                                        picUrl: music.picurl))));
-                          },
-                        ),
-                      )
-                      .toList(),
-                ],
-              )
-            : Container(),
+      drawer: UserInfo(
+        user: user,
+        init: init,
       ),
       body: SafeArea(
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Container(
-            alignment: Alignment.center,
-            width: size.width,
-            // padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Hero(
-              tag: 'search',
-              child: Material(
-                child: InputTypeGroup.customTextField(
-                    textAlian: TextAlign.center,
-                    width: size.width * 0.95,
-                    placeHold: "搜索",
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(FadeRoute(page: SearchSongs()));
-                    }),
-              ),
-            ),
-          ),
           Expanded(
-            child: ListView(
-                children: classification
-                    .map((list) => HorizontalSongList(
-                          type: list,
-                          callBack: (play, heroKey) {
-                            Navigator.of(context).push(FadeRoute(
-                                page: PlayListDetail(
-                                    play: play, heroKey: heroKey)));
-                          },
-                        ))
-                    .toList()),
+            child: Container(
+              margin: EdgeInsets.only(top: 10),
+              child: ListView(
+                  children: classification
+                      .map((list) => HorizontalSongList(
+                            type: list,
+                            callBack: (play, heroKey) {
+                              Navigator.of(context).push(FadeRoute(
+                                  page: PlayListDetail(
+                                      play: play, heroKey: heroKey)));
+                            },
+                          ))
+                      .toList()),
+            ),
           ),
         ]),
       ),
     );
-  }
-
-  _show(Function(String) callBack) {
-    showDialog(
-        context: context,
-        builder: (cxt) {
-          String qq = "";
-          return Center(
-            child: Column(children: [
-              Material(
-                child: TextField(
-                  onChanged: (text) {
-                    qq = text;
-                  },
-                ),
-              ),
-              RaisedButton(
-                child: Text('确定'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  callBack(qq);
-                },
-              )
-            ]),
-          );
-        });
   }
 }

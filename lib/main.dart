@@ -26,9 +26,20 @@ class MyApp extends StatelessWidget {
           // WillPopScope(child:
           new MaterialApp(
         theme: new ThemeData(
-            // primarySwatch: Colors.blue,
+            brightness: Brightness.light, //body颜色
+            backgroundColor: Colors.grey[200],
+            primaryColor: Colors.grey[500], //主题颜色
+            accentColor: Colors.cyan[800], //按钮颜色
+            dividerColor: Colors.grey[300],
+            primaryIconTheme:
+                IconThemeData(color: Color.fromRGBO(93, 124, 177, 1)),
+            textTheme: TextTheme(
+                body1: TextStyle(color: Color.fromRGBO(93, 124, 177, 1)),
+                body2: TextStyle(
+                  color: Color.fromRGBO(119, 119, 119, 1),
+                )), //字体颜色
             fontFamily: 'alifont',
-            primaryColor: Colors.white),
+            buttonColor: Colors.black),
         home: new HomePage(),
       ),
       // onWillPop: () {

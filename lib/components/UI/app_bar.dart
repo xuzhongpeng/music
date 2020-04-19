@@ -147,7 +147,7 @@ class _GmAppBarState extends State<GMAppBar> {
                               widget.title,
                               style: TextStyle(
                                   fontSize: 17.0,
-                                  color: widget.titleColor ?? Colors.black,
+                                  color: widget.titleColor,
                                   fontWeight: FontWeight.w500),
                               textAlign: TextAlign.center,
                               maxLines: 1,

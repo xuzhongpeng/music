@@ -8,6 +8,7 @@
  */
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
+import 'package:music/components/neumorphism/shadow.dart';
 import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
@@ -23,22 +24,25 @@ class RotateRecord extends AnimatedWidget {
       margin: new EdgeInsets.symmetric(vertical: 10.0),
       height: imgWidth,
       width: imgWidth,
-      child: new RotationTransition(
-          turns: animation,
-          child: Store.connect<PlayerModel>(builder: (_, _playModel, __) {
-            return Container(
-              width: imgWidth,
-              height: imgWidth,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 1),
-                  borderRadius: BorderRadius.circular(imgWidth / 2)),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(imgWidth / 2),
-                child: Image.network(_playModel.play?.headerImg,
-                    fit: BoxFit.cover),
-              ),
-            );
-          })),
+      child: OutShadow(
+        radius: imgWidth / 2,
+        child: new RotationTransition(
+            turns: animation,
+            child: Store.connect<PlayerModel>(builder: (_, _playModel, __) {
+              return Container(
+                width: imgWidth,
+                height: imgWidth,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 1),
+                    borderRadius: BorderRadius.circular(imgWidth / 2)),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(imgWidth / 2),
+                  child: Image.network(_playModel.play?.headerImg,
+                      fit: BoxFit.cover),
+                ),
+              );
+            })),
+      ),
     );
   }
 }

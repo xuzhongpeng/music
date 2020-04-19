@@ -8,6 +8,7 @@ import 'package:music/components/UI/js_scaffold.dart';
 import 'package:music/components/UI/loading.dart';
 import 'package:music/components/UI/music_list.dart';
 import 'package:music/components/UI/page_route.dart';
+import 'package:music/components/neumorphism/shadow.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
@@ -40,47 +41,49 @@ class _SearchSongsState extends State<SearchSongs> {
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Row(children: <Widget>[
               Container(
-                width: size.width * 0.1,
-                child: IconButton(
-                  padding: EdgeInsets.all(4),
-                  icon: Icon(
-                    Icons.expand_more,
-                    size: 22,
+                // width: size.width * 0.1,
+                margin: EdgeInsets.all(10),
+                child: OutShadow(
+                  width: 35,
+                  height: 35,
+                  child: IconButton(
+                    // padding: EdgeInsets.all(4),
+                    icon: Icon(
+                      Icons.expand_more,
+                      size: 20,
+                      color: Theme.of(context).primaryIconTheme.color,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
                 ),
               ),
-              Hero(
-                tag: 'search',
-                child: Material(
-                  child: InputTypeGroup.customTextField(
-                      width: size.width * 0.80,
-                      placeHold: "搜索",
-                      controller: _controller,
-                      autofocus: true,
-                      textFieldDidChanged: (text) {
-                        timer?.cancel();
-                        timer = new Timer(Duration(milliseconds: 500), () {
-                          // Loading().show(context: context);
-                          setState(() {
-                            isLoad = true;
-                          });
-                          _model.search(text).then((songs) {
-                            if (songs != null) {
-                              musics = songs;
-                            } else {
-                              musics = List();
-                            }
-                            setState(() {
-                              isLoad = false;
-                            });
-                          });
+              InputTypeGroup.customTextField(
+                  width: size.width * 0.70,
+                  height: 35,
+                  placeHold: "周杰伦",
+                  controller: _controller,
+                  autofocus: true,
+                  textFieldDidChanged: (text) {
+                    timer?.cancel();
+                    timer = new Timer(Duration(milliseconds: 500), () {
+                      // Loading().show(context: context);
+                      setState(() {
+                        isLoad = true;
+                      });
+                      _model.search(text).then((songs) {
+                        if (songs != null) {
+                          musics = songs;
+                        } else {
+                          musics = List();
+                        }
+                        setState(() {
+                          isLoad = false;
                         });
-                      }),
-                ),
-              ),
+                      });
+                    });
+                  }),
             ]),
           ),
           Expanded(

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:music/components/color/theme.dart';
 import 'package:music/entities/lyric.dart';
 
 class LyricWidget extends CustomPainter with ChangeNotifier {
@@ -19,13 +20,17 @@ class LyricWidget extends CustomPainter with ChangeNotifier {
 
   get offsetY => _offsetY;
   //时间颜色
-  TextStyle smallGrayTextStyle = TextStyle(color: Colors.grey[400]);
+  TextStyle smallGrayTextStyle =
+      TextStyle(color: JUTheme().theme.textTheme.body2.color);
   //歌词颜色
-  TextStyle commonGrayTextStyle = TextStyle(color: Colors.grey[350]);
+  TextStyle commonGrayTextStyle =
+      TextStyle(color: JUTheme().theme.textTheme.body2.color);
   //当前行颜色
-  TextStyle commonWhiteTextStyle = TextStyle(color: Colors.white);
+  TextStyle commonWhiteTextStyle =
+      TextStyle(color: JUTheme().theme.textTheme.body1.color, fontSize: 18);
   //拖动状态颜色
-  TextStyle commonWhite70TextStyle = TextStyle(color: Colors.white70);
+  TextStyle commonWhite70TextStyle =
+      TextStyle(color: JUTheme().theme.textTheme.body1.color);
   set offsetY(double value) {
     // 判断如果是在拖动状态下
     if (isDragging) {
@@ -51,11 +56,13 @@ class LyricWidget extends CustomPainter with ChangeNotifier {
     linePaint = Paint()
       ..color = Color.fromRGBO(1, 1, 1, 0)
       ..strokeWidth = ScreenUtil().setWidth(1);
-    lyricPaints.addAll(lyric.slices
-        .map((l) => TextPainter(
-            text: TextSpan(text: l.slice, style: commonGrayTextStyle),
-            textDirection: TextDirection.ltr))
-        .toList());
+    lyricPaints.addAll(lyric != null
+        ? lyric.slices
+            .map((l) => TextPainter(
+                text: TextSpan(text: l.slice, style: commonGrayTextStyle),
+                textDirection: TextDirection.ltr))
+            .toList()
+        : []);
     // 首先对TextPainter 进行 layout，否则会报错
     _layoutTextPainters();
   }
@@ -142,7 +149,7 @@ class LyricWidget extends CustomPainter with ChangeNotifier {
       draggingLineTimeTextPainter.layout();
       draggingLineTimeTextPainter.paint(
           canvas,
-          Offset(size.width - ScreenUtil().setWidth(80),
+          Offset(size.width - ScreenUtil().setWidth(80) - 20,
               size.height / 2 - ScreenUtil().setWidth(45)));
     }
   }

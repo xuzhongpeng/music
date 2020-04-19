@@ -1,10 +1,7 @@
-import 'dart:async';
-
-import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:music/components/lyric_panel.dart';
-import 'package:music/entities/lyric.dart';
+import 'package:music/components/color/theme.dart';
+import 'package:music/components/iconfont/iconfont.dart';
+import 'package:music/components/neumorphism/shadow.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
 // import 'package:music/model/lyric.dart';
@@ -110,7 +107,7 @@ class PlayerState extends State<Player> {
   //   });
   // }
 
-  Color color = Colors.white;
+  Color color = JUTheme().theme.primaryIconTheme.color;
 
   @override
   Widget build(BuildContext context) {
@@ -170,61 +167,84 @@ class PlayerState extends State<Player> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            new IconButton(
-              iconSize: 45,
-              onPressed: () {
-                _playerModel.last();
-              },
-              icon: new Icon(
-                Icons.skip_previous,
-                // size: 45.0,
-                color: color,
+            OutShadow(
+              width: 50,
+              height: 50,
+              child: new IconButton(
+                iconSize: 30,
+                onPressed: () {
+                  _playerModel.last();
+                },
+                icon: new Icon(
+                  IconFont.iconshangyishou,
+                  // size: 45.0,
+                  color: color,
+                ),
               ),
             ),
-            new IconButton(
-              iconSize: 60,
-              onPressed: () async {
-                if (_playerModel.isPlaying) {
-                  _playerModel.pause();
-                } else {
-                  _playerModel.resume();
-                }
-              },
-              padding: const EdgeInsets.all(0.0),
-              icon: new Icon(
-                _playerModel.isPlaying ? Icons.pause : Icons.play_arrow,
-                // size: 60.0,
-                color: color,
+            OutShadow(
+              width: 50,
+              height: 50,
+              child: new IconButton(
+                iconSize: 30,
+                onPressed: () async {
+                  if (_playerModel.isPlaying) {
+                    _playerModel.pause();
+                  } else {
+                    _playerModel.resume();
+                  }
+                },
+                padding: const EdgeInsets.all(0.0),
+                icon: new Icon(
+                  _playerModel.isPlaying
+                      ? IconFont.iconzanting
+                      : IconFont.iconbofang,
+                  // size: 60.0,
+                  color: color,
+                ),
               ),
             ),
-            new IconButton(
-              iconSize: 45,
-              onPressed: () {
-                //next
-                _playerModel.next();
-              },
-              icon: new Icon(
-                Icons.skip_next,
-                color: color,
+            OutShadow(
+              width: 50,
+              height: 50,
+              child: new IconButton(
+                iconSize: 30,
+                onPressed: () {
+                  //next
+                  _playerModel.next();
+                },
+                icon: new Icon(
+                  IconFont.iconxiayishou,
+                  color: color,
+                ),
               ),
             ),
           ],
         ),
       ),
-      new Slider(
-        key: Key(_playerModel.sliderValue.toString()),
-        onChanged: (newValue) {
-          _playerModel.seek(newValue);
-        },
-        value: _playerModel.sliderValue ?? 0.0,
-        activeColor: color,
+      Container(
+        height: 30,
+        width: 100, // MediaQuery.of(context).size.width * 0.8,
+        margin: EdgeInsets.only(top: 20),
+        padding: EdgeInsets.symmetric(horizontal: 30),
+        child: OutShadow(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: new Slider(
+            key: Key(_playerModel.sliderValue.toString()),
+            onChanged: (newValue) {
+              _playerModel.seek(newValue);
+            },
+            value: _playerModel.sliderValue ?? 0.0,
+            activeColor: color,
+          ),
+        ),
       ),
       Container(
         height: 40,
         child: new Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: 8.0,
+            horizontal: 30.0,
+            // vertical: 10.0,
           ),
           child: _timer(context),
         ),
