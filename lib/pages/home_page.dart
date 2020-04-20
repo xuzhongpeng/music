@@ -19,6 +19,8 @@ import 'package:music/provider/player_model.dart';
 import 'package:music/services/q/songs_service.dart';
 import 'package:music/stores/store.dart';
 import 'package:music/entities/classification.dart';
+import 'package:music/utils/json_manager.dart';
+import 'package:music/utils/sql_utils.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -30,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   List<PlayList> dissList;
   PlayerModel get model => Store.value<PlayerModel>(context, listen: false);
   List<PlayList> qqList;
-  UserDetail user;
+  // UserDetail model.userDetail;
   @override
   void initState() {
     super.initState();
@@ -38,15 +40,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   init() async {
+    // SqlUtils().open('model.userDetail');
+    model.userDetail = await JsonManager.getUserInfo();
     Future.microtask(() async {
-      if (model.qq == null) {
-        SureUserInfo.show(context, (text) {
+      if (model.userDetail == null) {
+        SureUserInfo.show(context, (text) async {
           model.qq = text;
-          init();
+          model.userDetail = await SongService().getQSongListByQQ(qq: model.qq);
+          JsonManager.saveUser(model.userDetail.toJson());
+          setState(() {});
         });
       } else {
-        user = await SongService().getQSongListByQQ(qq: model.qq);
-        setState(() {});
+        setState(() {
+          model.qq = model.userDetail.creator.uin.toString();
+        });
       }
     });
   }
@@ -102,7 +109,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       drawer: UserInfo(
-        user: user,
+        user: model.userDetail,
         init: init,
       ),
       body: SafeArea(

@@ -100,7 +100,7 @@ class InputTypeGroup {
       children: <Widget>[
         InnerShadowWidget(
           color: Colors.grey[400],
-          offset: Offset(3, 3),
+          offset: Offset(1, 1),
           blur: 5,
           child: Container(
             width: width,

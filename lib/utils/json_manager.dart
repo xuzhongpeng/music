@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:music/entities/musics.dart';
+import 'package:music/entities/q/user_detail.dart';
 import 'package:path_provider/path_provider.dart';
 
 class JsonManager {
   //播放列表json
   static String _playerList = "music/playerList.json";
+  static String _user = "music/userInfo.json";
   //当前播放名
   static String _nowPlayer = "playing";
   //播放列表名
@@ -75,5 +77,27 @@ class JsonManager {
       return json;
     }
     return {};
+  }
+
+  //保存用户信息(覆盖)
+  static saveUser(Map<String, dynamic> map) async {
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File _file = await File('$dir/$_user').create(recursive: true);
+    _file.writeAsStringSync(jsonEncode(map));
+  }
+
+  //获取用户信息
+  static Future<UserDetail> getUserInfo() async {
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File _file = await File('$dir/$_user').create(recursive: true);
+    String content = _file.readAsStringSync();
+    Map json;
+    try {
+      json = jsonDecode(content);
+    } catch (e) {}
+    if (json != null) {
+      return UserDetail.fromJson(json);
+    }
+    return null;
   }
 }

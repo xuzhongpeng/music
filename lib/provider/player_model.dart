@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:music/components/UI/page_route.dart';
 import 'package:music/entities/lyric.dart';
 import 'package:music/entities/musics.dart';
+import 'package:music/entities/q/user_detail.dart';
 import 'package:music/pages/mian_player.dart';
 import 'package:music/services/q/songs_service.dart';
 import 'package:music/entities/personalized.dart';
@@ -31,6 +32,7 @@ class PlayerModel extends MuProvider {
   //****************音乐相关 */
 
   String qq;
+  UserDetail userDetail;
   List<MusicEntity> _musics = List(); // 播放列表
   List<MusicEntity> _love = List();
   List<MusicEntity> get musics => _musics;
