@@ -117,10 +117,13 @@ class PlayerState extends State<Player> {
         //     color: Colors.white,
         //     child: SafeArea(
         //       child:
+        // SingleChildScrollView(
+        //     child:
         new Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.end,
       children: _controllers(context),
+      // )
       // ),
       //   ),
       // ),

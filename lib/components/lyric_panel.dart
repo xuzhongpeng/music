@@ -60,8 +60,8 @@ class LyricState extends State<LyricPanel> {
             child: Column(
               children: <Widget>[
                 Text(
-                  widget.lyric.slices.length > index
-                      ? widget.lyric.slices[index - 2].slice
+                  widget.lyric.slices.length > index && (index - 2) >= 0
+                      ? (widget.lyric.slices[index - 2].slice)
                       : "",
                   style: new TextStyle(
                     color: Colors.white,
