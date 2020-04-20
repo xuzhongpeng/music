@@ -20,7 +20,7 @@ import 'package:music/services/q/songs_service.dart';
 import 'package:music/stores/store.dart';
 import 'package:music/entities/classification.dart';
 import 'package:music/utils/json_manager.dart';
-import 'package:music/utils/sql_utils.dart';
+// import 'package:music/utils/sql_utils.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -83,7 +83,17 @@ class _HomePageState extends State<HomePage> {
               ),
               onPressed: () {
                 // Navigator.of(context).push(FadeRoute(page: LyricPage()));
-                Scaffold.of(context).openDrawer();
+                if (model.userDetail != null) {
+                  Scaffold.of(context).openDrawer();
+                } else {
+                  SureUserInfo.show(context, (text) async {
+                    model.qq = text;
+                    model.userDetail =
+                        await SongService().getQSongListByQQ(qq: model.qq);
+                    await JsonManager.saveUser(model.userDetail.toJson());
+                    setState(() {});
+                  });
+                }
               },
             ),
           ),

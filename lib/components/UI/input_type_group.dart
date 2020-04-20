@@ -99,38 +99,43 @@ class InputTypeGroup {
       alignment: Alignment.centerLeft,
       children: <Widget>[
         InnerShadowWidget(
-          color: Colors.grey[400],
-          offset: Offset(1, 1),
-          blur: 5,
-          child: Container(
-            width: width,
-            height: (height ?? 30),
-            margin: margin ?? EdgeInsets.fromLTRB(0, 0, 0, 0),
-            // padding: EdgeInsets.fromLTRB(5, 10, 0, 0),
-            // alignment: Alignment.center,
-            decoration: decoration ??
-                BoxDecoration(
-                  color: backGroundColor ?? Color.fromRGBO(244, 245, 246, 1),
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                ),
-            child: Stack(
-              alignment: Alignment.centerLeft,
-              children: <Widget>[
-                controller == null || controller?.text == ''
-                    ? Container(
-                        width: width,
-                        alignment: textAlian == TextAlign.center
-                            ? Alignment.center
-                            : Alignment.centerLeft,
-                        padding: EdgeInsets.only(left: 3),
-                        child: Text(
-                          placeHold ?? '',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 17, color: Colors.grey),
-                        ))
-                    : Container(),
-              ],
+          color: Colors.white,
+          offset: Offset(-1, -1),
+          blur: 1,
+          child: InnerShadowWidget(
+            color: Colors.grey[400],
+            offset: Offset(1, 1),
+            blur: 1,
+            child: Container(
+              width: width,
+              height: (height ?? 30),
+              margin: margin ?? EdgeInsets.fromLTRB(0, 0, 0, 0),
+              // padding: EdgeInsets.fromLTRB(5, 10, 0, 0),
+              // alignment: Alignment.center,
+              decoration: decoration ??
+                  BoxDecoration(
+                    color: backGroundColor ?? Color.fromRGBO(244, 245, 246, 1),
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  ),
+              child: Stack(
+                alignment: Alignment.centerLeft,
+                children: <Widget>[
+                  controller == null || controller?.text == ''
+                      ? Container(
+                          width: width,
+                          alignment: textAlian == TextAlign.center
+                              ? Alignment.center
+                              : Alignment.centerLeft,
+                          padding: EdgeInsets.only(left: 3),
+                          child: Text(
+                            placeHold ?? '',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 17, color: Colors.grey),
+                          ))
+                      : Container(),
+                ],
+              ),
             ),
           ),
         ),

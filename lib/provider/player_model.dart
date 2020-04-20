@@ -285,10 +285,17 @@ class PlayerModel extends MuProvider {
 
   //获取需要缓存的数据
   _parse(Map<String, dynamic> map) {
-    qq = map['qq'];
-    if (map['music'] != null)
-      _musics = map['music'].map((m) => MusicEntity.fromJson(m)).toList();
-    if (map['love'] != null)
-      _love = map['love'].map((m) => MusicEntity.fromJson(m)).toList();
+    if (map != null) {
+      var musicData = map['musicData'];
+      qq = musicData['qq'];
+      if (musicData['music'] != null)
+        _musics = List<MusicEntity>.from(
+            musicData['music'].map((m) => MusicEntity.fromJson(m)).toList());
+      if (musicData['love'] != null)
+        _love = List<MusicEntity>.from(
+            musicData['love'].map((m) => MusicEntity.fromJson(m)).toList());
+      var playing = map['playing'];
+      if (playing != null) _play = MusicEntity.fromJson(playing);
+    }
   }
 }

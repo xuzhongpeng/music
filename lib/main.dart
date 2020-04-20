@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
             textTheme: TextTheme(
                 body1: TextStyle(color: Color.fromRGBO(93, 124, 177, 1)),
                 body2: TextStyle(
-                  color: Color.fromRGBO(119, 119, 119, 1),
+                  color: Color.fromRGBO(129, 152, 191, 1),
                 )), //字体颜色
             fontFamily: 'alifont',
             buttonColor: Colors.black),
