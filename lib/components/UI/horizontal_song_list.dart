@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crypto/crypto.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -142,8 +143,8 @@ class MusicItem extends StatelessWidget {
                       padding: EdgeInsets.all(0.5),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          picUrl,
+                        child: CachedNetworkImage(
+                          imageUrl: picUrl,
                           fit: BoxFit.cover,
                         ),
                       ),

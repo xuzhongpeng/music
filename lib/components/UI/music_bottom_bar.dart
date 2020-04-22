@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/page_route.dart';
 import 'package:music/components/iconfont/iconfont.dart';
@@ -62,8 +63,9 @@ class MusicBottomBar extends StatelessWidget {
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(
                                               imgWidth / 2),
-                                          child: Image.network(
-                                              _playModel.play?.headerImg,
+                                          child: CachedNetworkImage(
+                                              imageUrl:
+                                                  _playModel.play?.headerImg,
                                               fit: BoxFit.cover),
                                         )),
                                   )),

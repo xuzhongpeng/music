@@ -14,162 +14,151 @@ import 'package:flutter/services.dart';
 import 'package:music/components/color/theme.dart';
 import 'package:music/components/neumorphism/insertShadow.dart';
 
-class InputTypeGroup {
+class InputTypeGroup extends StatefulWidget {
+  final Decoration decoration;
+  Color backGroundColor;
+  final FocusNode node;
+  bool autofocus;
+  final TextStyle textStyle;
+  final Function(String) textFieldDidChanged;
+  final EdgeInsets margin;
+  final String placeHold;
+  final VoidCallback onTap;
+  final List<TextInputFormatter> inputFormatters;
+  final double width;
+  final double height;
+  final TextAlign textAlian;
+  final int maxLines;
+  final InputDecoration textDecoration;
+  final Function(String) onSubmitted;
+  TextEditingController controller;
+  final TextInputAction textInputAction;
+  final TextInputType keyboardType;
+  final bool enable;
+  InputTypeGroup(
+      {this.decoration,
+      this.backGroundColor,
+      this.node,
+      this.autofocus = false,
+      this.textStyle,
+      this.textFieldDidChanged,
+      this.margin,
+      this.placeHold,
+      this.onTap,
+      this.inputFormatters,
+      this.width,
+      this.height = 34,
+      this.textAlian,
+      this.maxLines,
+      this.textDecoration,
+      this.onSubmitted,
+      this.controller,
+      this.textInputAction,
+      this.keyboardType,
+      this.enable});
+  @override
+  _StateInputTypeGroup createState() => _StateInputTypeGroup();
+}
+
+class _StateInputTypeGroup extends State<InputTypeGroup> {
   static final blackTextStyle = TextStyle(
       color: JUTheme().theme.textTheme.body1.color,
       fontSize: 17,
       fontWeight: FontWeight.normal);
-//单行
-  static Widget customTextField1(
-      {Decoration decoration,
-      Color backGroundColor,
-      FocusNode node,
-      bool autofocus,
-      TextStyle textStyle,
-      Function(String) textFieldDidChanged,
-      EdgeInsets margin,
-      String placeHold,
-      VoidCallback onTap,
-      List<TextInputFormatter> inputFormatters,
-      double width,
-      double height,
-      TextAlign textAlian,
-      int maxLines,
-      InputDecoration textDecoration,
-      Function(String) onSubmitted,
-      TextEditingController controller,
-      TextInputAction textInputAction,
-      TextInputType keyboardType,
-      bool enable}) {
-    return Container(
-      width: width,
-      height: height ?? 30,
-      margin: margin ?? EdgeInsets.fromLTRB(0, 5, 0, 5),
-      alignment: Alignment.center,
-      decoration: (decoration ??
-          BoxDecoration(
-            color: backGroundColor ?? Color.fromRGBO(239, 239, 244, 1),
-            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          )),
-      child: TextField(
-        focusNode: node,
-        enabled: enable ?? true,
-        keyboardType: keyboardType ?? TextInputType.text,
-        controller: controller,
-        onTap: onTap ?? null,
-        textAlign: textAlian ?? TextAlign.left,
-        autofocus: autofocus ?? false,
-        textInputAction: textInputAction ?? null,
-        onSubmitted: onSubmitted ?? null,
-        maxLines: maxLines ?? 1,
-        style: textStyle ?? blackTextStyle,
-        inputFormatters: inputFormatters,
-        decoration: textDecoration ??
-            InputDecoration(
-                contentPadding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                border: InputBorder.none,
-                hintText: placeHold ?? '请输入'),
-        onChanged: textFieldDidChanged,
-      ),
-    );
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.controller == null) {
+      widget.controller = TextEditingController();
+    }
   }
 
-  static Widget customTextField(
-      {Decoration decoration,
-      Color backGroundColor,
-      FocusNode node,
-      bool autofocus,
-      TextStyle textStyle,
-      Function(String) textFieldDidChanged,
-      EdgeInsets margin,
-      String placeHold,
-      VoidCallback onTap,
-      List<TextInputFormatter> inputFormatters,
-      double width,
-      double height,
-      TextAlign textAlian,
-      int maxLines,
-      InputDecoration textDecoration,
-      Function(String) onSubmitted,
-      TextEditingController controller,
-      TextInputAction textInputAction,
-      TextInputType keyboardType,
-      bool enable}) {
-    return Stack(
-      alignment: Alignment.centerLeft,
-      children: <Widget>[
-        InnerShadowWidget(
-          color: Colors.white,
-          offset: Offset(-1, -1),
-          blur: 1,
-          child: InnerShadowWidget(
-            color: Colors.grey[400],
-            offset: Offset(1, 1),
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Stack(
+        alignment: Alignment.centerLeft,
+        children: <Widget>[
+          InnerShadowWidget(
+            color: Colors.white,
+            offset: Offset(-1, -1),
             blur: 1,
-            child: Container(
-              width: width,
-              height: (height ?? 30),
-              margin: margin ?? EdgeInsets.fromLTRB(0, 0, 0, 0),
-              // padding: EdgeInsets.fromLTRB(5, 10, 0, 0),
-              // alignment: Alignment.center,
-              decoration: decoration ??
-                  BoxDecoration(
-                    color: backGroundColor ?? Color.fromRGBO(244, 245, 246, 1),
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  ),
-              child: Stack(
-                alignment: Alignment.centerLeft,
-                children: <Widget>[
-                  controller == null || controller?.text == ''
-                      ? Container(
-                          width: width,
-                          alignment: textAlian == TextAlign.center
-                              ? Alignment.center
-                              : Alignment.centerLeft,
-                          padding: EdgeInsets.only(left: 3),
-                          child: Text(
-                            placeHold ?? '',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 17, color: Colors.grey),
-                          ))
-                      : Container(),
-                ],
+            child: InnerShadowWidget(
+              color: Colors.grey[400],
+              offset: Offset(1, 1),
+              blur: 1,
+              child: Container(
+                width: widget.width,
+                height: (widget.height ?? 30),
+                margin: widget.margin ?? EdgeInsets.fromLTRB(0, 0, 0, 0),
+                // padding: EdgeInsets.fromLTRB(5, 10, 0, 0),
+                // alignment: Alignment.center,
+                decoration: widget.decoration ??
+                    BoxDecoration(
+                      color: widget.backGroundColor ??
+                          Color.fromRGBO(244, 245, 246, 1),
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                child: Stack(
+                  alignment: Alignment.centerLeft,
+                  children: <Widget>[
+                    widget.controller == null || widget.controller?.text == ''
+                        ? Container(
+                            width: widget.width,
+                            alignment: widget.textAlian == TextAlign.center
+                                ? Alignment.center
+                                : Alignment.centerLeft,
+                            padding: EdgeInsets.only(left: 7),
+                            child: Text(
+                              widget.placeHold ?? '',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 17, color: Colors.grey[400]),
+                            ))
+                        : Container(),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        Container(
-          padding: EdgeInsets.only(left: 5),
-          width: width,
-          child: TextField(
-            onTap: onTap ?? null,
-            textAlignVertical: TextAlignVertical.center,
-            focusNode: node,
-            enabled: enable ?? true,
-            keyboardAppearance: Brightness.light,
-            keyboardType: TextInputType.text,
-            controller: controller,
-            textAlign: textAlian ?? TextAlign.left,
-            autofocus: autofocus ?? false,
-            textInputAction: textInputAction ?? null,
-            onSubmitted: onSubmitted ?? null,
-            minLines: 1,
-            maxLines: maxLines ?? 1,
-            style: textStyle ?? blackTextStyle,
-            inputFormatters: inputFormatters,
-            decoration: textDecoration ??
-                InputDecoration(
-                  // prefixIcon: prefix,
-                  // fillColor:
-                  //     backGroundColor ?? Color.fromRGBO(239, 239, 244, 1),
-                  // contentPadding: EdgeInsets.only(left: 5, top: 0),
-                  border: InputBorder.none,
-                ),
-            onChanged: textFieldDidChanged,
+          Container(
+            padding: EdgeInsets.only(left: 5),
+            width: widget.width,
+            child: TextField(
+                onTap: widget.onTap ?? null,
+                textAlignVertical: TextAlignVertical.center,
+                focusNode: widget.node,
+                enabled: widget.enable ?? true,
+                keyboardAppearance: Brightness.light,
+                keyboardType: widget.keyboardType ?? TextInputType.text,
+                controller: widget.controller,
+                textAlign: widget.textAlian ?? TextAlign.left,
+                autofocus: widget.autofocus ?? false,
+                textInputAction: widget.textInputAction ?? null,
+                onSubmitted: widget.onSubmitted ?? null,
+                minLines: 1,
+                maxLines: widget.maxLines ?? 1,
+                style: widget.textStyle ?? blackTextStyle,
+                inputFormatters: widget.inputFormatters,
+                decoration: widget.textDecoration ??
+                    InputDecoration(
+                      // prefixIcon: prefix,
+                      // fillColor:
+                      //     backGroundColor ?? Color.fromRGBO(239, 239, 244, 1),
+                      // contentPadding: EdgeInsets.only(left: 5, top: 0),
+                      border: InputBorder.none,
+                    ),
+                onChanged: (text) {
+                  if (text != '') setState(() {});
+                  widget.textFieldDidChanged(text);
+                }),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

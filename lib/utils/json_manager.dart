@@ -82,6 +82,7 @@ class JsonManager {
   //保存用户信息(覆盖)
   static Future<void> saveUser(Map<String, dynamic> map) async {
     String dir = (await getApplicationDocumentsDirectory()).path;
+    print(dir);
     File _file = await File('$dir/$_user').create(recursive: true);
     _file.writeAsStringSync(jsonEncode(map));
   }

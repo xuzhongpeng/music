@@ -59,7 +59,7 @@ class _SearchSongsState extends State<SearchSongs> {
                   ),
                 ),
               ),
-              InputTypeGroup.customTextField(
+              InputTypeGroup(
                   width: size.width * 0.70,
                   height: 35,
                   placeHold: "周杰伦",

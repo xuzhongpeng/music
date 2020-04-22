@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class CircleImage extends StatelessWidget {
@@ -17,7 +18,7 @@ class CircleImage extends StatelessWidget {
         borderRadius: BorderRadius.circular(width / 2),
         child: child is String
             ? (child is String && child != ''
-                ? Image.network(child)
+                ? CachedNetworkImage(imageUrl: child)
                 : Container(color: Colors.blue))
             : child,
       ),

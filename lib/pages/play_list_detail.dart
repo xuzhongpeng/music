@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/app_bar.dart';
 import 'package:music/components/UI/js_scaffold.dart';
@@ -80,8 +81,8 @@ class _PlayListDetailState extends State<PlayListDetail> {
                         color: Colors.red,
                         child: widget.play.picUrl != null &&
                                 widget.play.picUrl != ''
-                            ? Image.network(
-                                widget.play.picUrl,
+                            ? CachedNetworkImage(
+                                imageUrl: widget.play.picUrl,
                                 fit: BoxFit.cover,
                               )
                             : Container(),
@@ -93,8 +94,8 @@ class _PlayListDetailState extends State<PlayListDetail> {
                     color: Colors.red,
                     child:
                         widget.play.picUrl != null && widget.play.picUrl != ''
-                            ? Image.network(
-                                widget.play.picUrl,
+                            ? CachedNetworkImage(
+                                imageUrl: widget.play.picUrl,
                                 fit: BoxFit.cover,
                               )
                             : Container(),

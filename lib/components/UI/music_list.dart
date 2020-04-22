@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/iconfont/iconfont.dart';
 import 'package:music/components/neumorphism/shadow.dart';
@@ -59,8 +60,8 @@ class MusicItem extends StatelessWidget {
                 width: 60,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child:
-                      Image.network(song?.headerImg ?? "", fit: BoxFit.cover),
+                  child: CachedNetworkImage(
+                      imageUrl: song?.headerImg ?? "", fit: BoxFit.cover),
                 ),
               ),
             ),

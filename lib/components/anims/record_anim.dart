@@ -6,6 +6,7 @@
  * @LastEditTime : 2019-12-30 20:07:39
  * @Description: 播放器页面
  */
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/neumorphism/shadow.dart';
@@ -37,8 +38,8 @@ class RotateRecord extends AnimatedWidget {
                     borderRadius: BorderRadius.circular(imgWidth / 2)),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(imgWidth / 2),
-                  child: Image.network(_playModel.play?.headerImg,
-                      fit: BoxFit.cover),
+                  child: CachedNetworkImage(
+                      imageUrl: _playModel.play?.headerImg, fit: BoxFit.cover),
                 ),
               );
             })),

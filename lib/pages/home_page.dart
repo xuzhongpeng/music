@@ -44,10 +44,8 @@ class _HomePageState extends State<HomePage> {
     model.userDetail = await JsonManager.getUserInfo();
     Future.microtask(() async {
       if (model.userDetail == null) {
-        SureUserInfo.show(context, (text) async {
-          model.qq = text;
-          model.userDetail = await SongService().getQSongListByQQ(qq: model.qq);
-          JsonManager.saveUser(model.userDetail.toJson());
+        SureUserInfo.show(context, () async {
+          model.saveUserInfo();
           setState(() {});
         });
       } else {
