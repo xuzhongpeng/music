@@ -63,7 +63,7 @@ class SongService {
         return UserDetail.fromJson(res.data['data']);
       } else {
         //出错
-        throw FlutterError("获取歌单出错");
+        throw FlutterError("获取歌单出错，请检查QQ号是否输入正确");
       }
     } else {
       return null;

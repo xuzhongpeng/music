@@ -117,7 +117,7 @@ class _StateInputTypeGroup extends State<InputTypeGroup> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                  fontSize: 17, color: Colors.grey[400]),
+                                  fontSize: 17, color: Colors.grey[300]),
                             ))
                         : Container(),
                   ],

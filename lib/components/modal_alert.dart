@@ -4,7 +4,7 @@ class Modal {
   static Future<void> show(BuildContext context,
       {Widget child, Color backGroundColor}) {
     return Navigator.of(context)
-        .push(FadeRoute(
+        .push(MoveRoute(
             opaque: false,
             barrierColor: backGroundColor ?? Colors.white30,
             builder: (_) => child))
@@ -12,10 +12,10 @@ class Modal {
   }
 }
 
-class FadeRoute extends PageRoute {
-  FadeRoute({
+class MoveRoute extends PageRoute {
+  MoveRoute({
     @required this.builder,
-    this.transitionDuration = const Duration(milliseconds: 300),
+    this.transitionDuration = const Duration(milliseconds: 150),
     this.opaque = true,
     this.barrierDismissible = false,
     this.barrierColor,
@@ -54,14 +54,28 @@ class FadeRoute extends PageRoute {
     // final PageTransitionsTheme theme = Theme.of(context).pageTransitionsTheme;
     // return theme.buildTransitions(
     //     this, context, animation, secondaryAnimation, child);
-    var begin = Offset(0.0, 1.0);
-    var end = Offset(0.0, 0.0);
-    var tween = Tween(begin: begin, end: end);
-    var offsetAnimation = animation.drive(tween);
-
-    return SlideTransition(
-      position: offsetAnimation,
+    return ScaleTransition(
+      scale: animation,
       child: child,
+    );
+  }
+}
+
+class GrowTransition extends StatelessWidget {
+  GrowTransition({this.child, this.animation});
+
+  final Widget child;
+  final Animation<double> animation;
+
+  Widget build(BuildContext context) {
+    return new Center(
+      child: new AnimatedBuilder(
+          animation: animation,
+          builder: (BuildContext context, Widget child) {
+            return new Container(
+                height: animation.value, width: animation.value, child: child);
+          },
+          child: child),
     );
   }
 }

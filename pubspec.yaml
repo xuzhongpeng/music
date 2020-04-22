@@ -29,6 +29,7 @@ dependencies:
   sqflite: 1.1.8
   flutter_screenutil: 1.0.1
   cached_network_image: ^1.1.3
+  toast: ^0.1.5
   music_notification:
     path: ../music_notification
 dev_dependencies:

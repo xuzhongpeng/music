@@ -20,6 +20,7 @@ import 'package:music/services/q/songs_service.dart';
 import 'package:music/stores/store.dart';
 import 'package:music/entities/classification.dart';
 import 'package:music/utils/json_manager.dart';
+import 'package:toast/toast.dart';
 // import 'package:music/utils/sql_utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,7 +31,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // List<Personalized> personalized;
   List<PlayList> dissList;
-  PlayerModel get model => Store.value<PlayerModel>(context, listen: false);
+  PlayerModel model = PlayerModel();
   List<PlayList> qqList;
   // UserDetail model.userDetail;
   @override
@@ -41,18 +42,24 @@ class _HomePageState extends State<HomePage> {
 
   init() async {
     // SqlUtils().open('model.userDetail');
-    model.userDetail = await JsonManager.getUserInfo();
-    Future.microtask(() async {
-      if (model.userDetail == null) {
-        SureUserInfo.show(context, () async {
-          model.saveUserInfo();
-          setState(() {});
-        });
-      } else {
-        setState(() {
-          model.qq = model.userDetail.creator.uin.toString();
-        });
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      model = Store.value<PlayerModel>(context, listen: true);
+      model.userDetail = await JsonManager.getUserInfo();
+      Future.microtask(() async {
+        if (model.userDetail == null) {
+          alertInfo();
+        } else {
+          setState(() {
+            model.qq = model.userDetail.creator.uin.toString();
+          });
+        }
+      });
+    });
+  }
+
+  alertInfo() {
+    SureUserInfo.show(context, (text) async {
+      if (text != null) await model.saveUserInfo(text, context);
     });
   }
 
@@ -84,13 +91,7 @@ class _HomePageState extends State<HomePage> {
                 if (model.userDetail != null) {
                   Scaffold.of(context).openDrawer();
                 } else {
-                  SureUserInfo.show(context, (text) async {
-                    model.qq = text;
-                    model.userDetail =
-                        await SongService().getQSongListByQQ(qq: model.qq);
-                    await JsonManager.saveUser(model.userDetail.toJson());
-                    setState(() {});
-                  });
+                  alertInfo();
                 }
               },
             ),
@@ -117,8 +118,11 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       drawer: UserInfo(
+        key: Key(model?.userDetail != null
+            ? model.userDetail.creator.uin.toString()
+            : 'none'),
         user: model.userDetail,
-        init: init,
+        init: alertInfo,
       ),
       body: SafeArea(
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [

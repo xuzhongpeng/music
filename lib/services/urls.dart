@@ -1,4 +1,4 @@
-String _baseUrl = "http://music.jsososo.com";
+String _baseUrl = "http://jsshou.cn";
 
 class Urls {
   static String qq = "$_baseUrl/apiQ";

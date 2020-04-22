@@ -10,10 +10,12 @@ import 'package:music/pages/play_list_detail.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
 
+import '../modal_alert.dart';
+
 class UserInfo extends StatelessWidget {
   final UserDetail user;
   final VoidCallback init;
-  UserInfo({this.user, this.init});
+  UserInfo({Key key, this.user, this.init}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     PlayerModel model = Store.value<PlayerModel>(context, listen: false);
@@ -27,23 +29,32 @@ class UserInfo extends StatelessWidget {
                         decoration: BoxDecoration(
                             color: Theme.of(context).backgroundColor),
                         accountEmail: Text(
-                          user.creator.uinWeb,
+                          user.creator.uinWeb + ('(更换)'),
                           style: Theme.of(context).textTheme.body2,
                         ),
                         accountName: Text(user.creator.nick,
                             style: Theme.of(context).textTheme.body1),
                         onDetailsPressed: () {
-                          SureUserInfo.show(context, (text) {
-                            model.qq = text;
-                            init();
-                          });
+                          init();
                         },
                         currentAccountPicture: OutShadow(
                           radius: 25,
                           child: CircleImage(child: user.creator.headpic),
                         ),
                       ),
-
+                      _divider(),
+                      ListTile(
+                        title: Text(
+                          '关于软件',
+                          style: Theme.of(context).textTheme.body1,
+                        ),
+                        onTap: () {
+                          Modal.show(
+                            context,
+                            child: EnterUserInfo(),
+                          );
+                        },
+                      ),
                       _divider(),
                       ListTile(
                         title: Text(
@@ -162,6 +173,96 @@ class UserInfo extends StatelessWidget {
                 tileMode: TileMode.clamp,
               ),
               borderRadius: BorderRadius.all(Radius.circular(1)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//关于软件
+class EnterUserInfo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+      child: Container(
+        color: Colors.black26,
+        width: MediaQuery.of(context).size.width,
+        alignment: Alignment.center,
+        child: GestureDetector(
+          onTap: () {},
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: 320,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Theme.of(context).backgroundColor,
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+            ),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(20),
+                  alignment: Alignment.centerLeft,
+                  child: Column(children: <Widget>[
+                    Text(
+                      '关于软件',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 30,
+                          decoration: TextDecoration.none),
+                    ),
+                    Text(
+                      'about Soft',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                          decoration: TextDecoration.none),
+                    ),
+                  ]),
+                ),
+                Container(
+                    child: OutShadow(
+                  width: 250,
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    '此软件为JSShou编写,\n有问题请进入我的博客(jsshou.cn)留言,\n学习交流请加我QQ号1452754335,\n此软件只做学习交流，不做任何商业用途！',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        decoration: TextDecoration.none),
+                  ),
+                )),
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: OutShadow(
+                        width: 60,
+                        height: 40,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            '确定',
+                            style: TextStyle(
+                                color: Colors.black,
+                                decoration: TextDecoration.none,
+                                fontSize: 15),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

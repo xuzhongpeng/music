@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:music/components/UI/loading.dart';
 import 'package:music/components/UI/page_route.dart';
 import 'package:music/entities/lyric.dart';
 import 'package:music/entities/musics.dart';
@@ -16,6 +17,7 @@ import 'package:music/stores/provider.dart';
 import 'package:music/utils/utils.dart';
 import 'package:music/utils/json_manager.dart';
 import 'package:music_notification/music_notification.dart';
+import 'package:toast/toast.dart';
 
 class PlayerModel extends MuProvider {
   //**************播放器相关 */
@@ -126,6 +128,15 @@ class PlayerModel extends MuProvider {
     });
   }
 
+//如果下一首5s内没播放 那么自动跳转
+  _awaitTime() {
+    Future.delayed(Duration(milliseconds: 5000), () {
+      if (_audioPlayer.state != AudioPlayerState.PLAYING) {
+        next();
+      }
+    });
+  }
+
   //播放新音乐+下载音乐链接+
   Future<void> playingMusic(MusicEntity song) async {
     song.url = Song.fromQQ(minUrl: await getDetail(song));
@@ -206,6 +217,7 @@ class PlayerModel extends MuProvider {
       music = musics[0];
     }
     playing(music);
+    _awaitTime();
   }
 
   //切换上一首
@@ -301,8 +313,18 @@ class PlayerModel extends MuProvider {
   }
 
   //获取用户信息
-  saveUserInfo() async {
-    userDetail = await SongService().getQSongListByQQ(qq: qq);
-    JsonManager.saveUser(userDetail.toJson());
+  saveUserInfo(String qq, BuildContext context) {
+    Loading().show(context: context);
+    this.qq = qq;
+    SongService().getQSongListByQQ(qq: qq).then((result) {
+      userDetail = result;
+      JsonManager.saveUser(userDetail.toJson());
+      Loading().dismiss();
+      notifyListeners();
+    }).catchError((onError) {
+      Loading().dismiss();
+      Toast.show(onError.toString(), context,
+          duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+    });
   }
 }
