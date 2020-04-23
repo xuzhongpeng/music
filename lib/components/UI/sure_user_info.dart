@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:music/components/modal_alert.dart';
 import 'package:music/components/neumorphism/shadow.dart';
+import 'package:music/services/api/user_service.dart';
+import 'package:music/utils/utils.dart';
 
 import 'input_type_group.dart';
 
@@ -92,7 +94,9 @@ class _EnterUserInfoState extends State<EnterUserInfo> {
                     children: <Widget>[
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pop();
+                          // UserService.getVersions();
+                          Utils().checkVersions(context);
+                          // Navigator.of(context).pop();
                         },
                         child: OutShadow(
                           width: 60,

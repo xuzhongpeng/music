@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/circle_image.dart';
+import 'package:music/components/UI/dialog.dart';
 import 'package:music/components/UI/page_route.dart';
 import 'package:music/components/UI/sure_user_info.dart';
 import 'package:music/components/neumorphism/insertShadow.dart';
@@ -51,7 +52,11 @@ class UserInfo extends StatelessWidget {
                         onTap: () {
                           Modal.show(
                             context,
-                            child: EnterUserInfo(),
+                            child: JUDialog(
+                                title: '关于软件',
+                                subTitle: 'About Soft',
+                                msg:
+                                    "此软件为JSShou编写,\n有问题请进入我的博客(jsshou.cn)留言,\n学习交流请加我QQ号1452754335,\n此软件只做学习交流，不做任何商业用途！"),
                           );
                         },
                       ),
@@ -182,7 +187,7 @@ class UserInfo extends StatelessWidget {
 }
 
 //关于软件
-class EnterUserInfo extends StatelessWidget {
+class AboutSoft extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

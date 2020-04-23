@@ -3,16 +3,12 @@ import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/loading.dart';
-import 'package:music/components/UI/page_route.dart';
 import 'package:music/entities/lyric.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/entities/q/user_detail.dart';
-import 'package:music/pages/mian_player.dart';
 import 'package:music/services/q/songs_service.dart';
-import 'package:music/entities/personalized.dart';
 import 'package:music/stores/provider.dart';
 import 'package:music/utils/utils.dart';
 import 'package:music/utils/json_manager.dart';
