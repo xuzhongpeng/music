@@ -42,19 +42,6 @@ class MyApp extends StatelessWidget {
             buttonColor: Colors.black),
         home: new HomePage(),
       ),
-      // onWillPop: () {
-      //   // 点击返回键的操作
-      //   if (lastPopTime == null ||
-      //       DateTime.now().difference(lastPopTime) > Duration(seconds: 2)) {
-      //     lastPopTime = DateTime.now();
-      //     print("再按一次");
-      //   } else {
-      //     lastPopTime = DateTime.now();
-      //     // 退出app
-      //     SystemNavigator.pop();
-      //   }
-      // },
-      // ),
     );
   }
 }

@@ -9,6 +9,8 @@ class JsonManager {
   //播放列表json
   static String _playerList = "music/playerList.json";
   static String _user = "music/userInfo.json";
+
+  static String _common = 'music/common.json';
   //当前播放名
   static String _nowPlayer = "playing";
   //播放列表名
@@ -98,6 +100,36 @@ class JsonManager {
     } catch (e) {}
     if (json != null) {
       return UserDetail.fromJson(json);
+    }
+    return null;
+  }
+
+  ///保存单个信息
+  static setLocation(String key, String value) async {
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File _file = await File('$dir/$_common').create(recursive: true);
+    String content = _file.readAsStringSync();
+    Map<String, dynamic> json;
+    try {
+      json = Map<String, dynamic>.from(jsonDecode(content));
+    } catch (e) {
+      json = Map();
+    }
+    json.addAll({key: value});
+    _file.writeAsStringSync(jsonEncode(json));
+  }
+
+  ///获取单个信息
+  static Future<String> getLocation(String key) async {
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File _file = await File('$dir/$_common').create(recursive: true);
+    String content = _file.readAsStringSync();
+    Map json;
+    try {
+      json = jsonDecode(content);
+    } catch (e) {}
+    if (json != null) {
+      return json[key];
     }
     return null;
   }

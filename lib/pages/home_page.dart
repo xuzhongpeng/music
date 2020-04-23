@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music/components/UI/app_bar.dart';
 import 'package:music/components/UI/circle_image.dart';
@@ -20,6 +21,7 @@ import 'package:music/services/q/songs_service.dart';
 import 'package:music/stores/store.dart';
 import 'package:music/entities/classification.dart';
 import 'package:music/utils/json_manager.dart';
+import 'package:music/utils/utils.dart';
 import 'package:toast/toast.dart';
 // import 'package:music/utils/sql_utils.dart';
 
@@ -34,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   PlayerModel model = PlayerModel();
   List<PlayList> qqList;
   // UserDetail model.userDetail;
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +57,7 @@ class _HomePageState extends State<HomePage> {
           });
         }
       });
+      Utils.checkVersions(context);
     });
   }
 
@@ -69,81 +73,98 @@ class _HomePageState extends State<HomePage> {
     ScreenUtil.init(context);
     // Store.value<PlayerModel>(context, listen: false).init();
     // Store.value<PlayerModel>(context, listen: false).init(context);
-    return JsScaffold(
-      // backgroundColor: Colors.grey[200],
-      appBar: GMAppBar(
-        title: "JSSHOU的音乐盒",
-        leading: Builder(
-          builder: (context) => Container(
-            padding: EdgeInsets.only(left: 10),
-            child: IconButton(
-              icon: OutShadow(
-                padding: EdgeInsets.all(8),
-                radius: 5,
-                child: Icon(
-                  Icons.menu,
-                  size: 18,
-                  color: Theme.of(context).primaryIconTheme.color,
+    return WillPopScope(
+      child: JsScaffold(
+        // backgroundColor: Colors.grey[200],
+        appBar: GMAppBar(
+          title: "JSSHOU的音乐盒",
+          leading: Builder(
+            builder: (context) => Container(
+              padding: EdgeInsets.only(left: 10),
+              child: IconButton(
+                icon: OutShadow(
+                  padding: EdgeInsets.all(8),
+                  radius: 5,
+                  child: Icon(
+                    Icons.menu,
+                    size: 18,
+                    color: Theme.of(context).primaryIconTheme.color,
+                  ),
                 ),
+                onPressed: () {
+                  // Navigator.of(context).push(FadeRoute(page: LyricPage()));
+                  if (model.userDetail != null) {
+                    Scaffold.of(context).openDrawer();
+                  } else {
+                    alertInfo();
+                  }
+                },
               ),
-              onPressed: () {
-                // Navigator.of(context).push(FadeRoute(page: LyricPage()));
-                if (model.userDetail != null) {
-                  Scaffold.of(context).openDrawer();
-                } else {
-                  alertInfo();
-                }
-              },
+            ),
+          ),
+          trailing: Builder(
+            builder: (context) => Container(
+              padding: EdgeInsets.only(right: 10),
+              child: IconButton(
+                icon: OutShadow(
+                  padding: EdgeInsets.all(8),
+                  radius: 5,
+                  child: Icon(
+                    Icons.search,
+                    color: Theme.of(context).primaryIconTheme.color,
+                    size: 18,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(FadeRoute(page: SearchSongs()));
+                },
+              ),
             ),
           ),
         ),
-        trailing: Builder(
-          builder: (context) => Container(
-            padding: EdgeInsets.only(right: 10),
-            child: IconButton(
-              icon: OutShadow(
-                padding: EdgeInsets.all(8),
-                radius: 5,
-                child: Icon(
-                  Icons.search,
-                  color: Theme.of(context).primaryIconTheme.color,
-                  size: 18,
-                ),
+        drawer: UserInfo(
+          key: Key(model?.userDetail != null
+              ? model.userDetail.creator.uin.toString()
+              : 'none'),
+          user: model.userDetail,
+          init: alertInfo,
+        ),
+        body: SafeArea(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(top: 10),
+                child: ListView(
+                    children: classification
+                        .map((list) => HorizontalSongList(
+                              type: list,
+                              callBack: (play, heroKey) {
+                                Navigator.of(context).push(FadeRoute(
+                                    page: PlayListDetail(
+                                        play: play, heroKey: heroKey)));
+                              },
+                            ))
+                        .toList()),
               ),
-              onPressed: () {
-                Navigator.of(context).push(FadeRoute(page: SearchSongs()));
-              },
             ),
-          ),
+          ]),
         ),
       ),
-      drawer: UserInfo(
-        key: Key(model?.userDetail != null
-            ? model.userDetail.creator.uin.toString()
-            : 'none'),
-        user: model.userDetail,
-        init: alertInfo,
-      ),
-      body: SafeArea(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(top: 10),
-              child: ListView(
-                  children: classification
-                      .map((list) => HorizontalSongList(
-                            type: list,
-                            callBack: (play, heroKey) {
-                              Navigator.of(context).push(FadeRoute(
-                                  page: PlayListDetail(
-                                      play: play, heroKey: heroKey)));
-                            },
-                          ))
-                      .toList()),
-            ),
-          ),
-        ]),
-      ),
+      onWillPop: () {
+        // 点击返回键的操作
+        if (lastPopTime == null ||
+            DateTime.now().difference(lastPopTime) > Duration(seconds: 2)) {
+          lastPopTime = DateTime.now();
+          Toast.show("再按一次退出", context);
+        } else {
+          lastPopTime = DateTime.now();
+          // 退出app
+          SystemNavigator.pop();
+        }
+      },
     );
   }
+
+  var lastPopTime;
 }

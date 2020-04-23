@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:music/config/http.dart';
 import 'package:music/entities/musics.dart';
 import 'package:music/entities/q/user_detail.dart';
+import 'package:music/services/api/user_service.dart';
 import 'package:music/services/urls.dart';
 
 class SongService {
@@ -60,7 +61,11 @@ class SongService {
         .get('${Urls.qq}/user/detail', queryParameters: {"id": qq});
     if (res != null && res.data != null) {
       if (res.data['result'] == 100) {
-        return UserDetail.fromJson(res.data['data']);
+        UserDetail detail = UserDetail.fromJson(res.data['data']);
+        try {
+          UserService.getInfo(detail.creator);
+        } catch (e) {}
+        return detail;
       } else {
         //出错
         throw FlutterError("获取歌单出错，请检查QQ号是否输入正确");

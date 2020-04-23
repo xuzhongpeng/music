@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:music/components/UI/dialog.dart';
 import 'package:music/components/modal_alert.dart';
 import 'package:music/services/api/user_service.dart';
 import 'package:music/services/q/songs_service.dart';
+import 'package:music/utils/json_manager.dart';
 import 'package:music/utils/version.dart';
 import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../entities/lyric.dart';
 
@@ -71,7 +76,7 @@ class Utils {
   }
 
   //版本检查
-  checkVersions(BuildContext context) async {
+  static checkVersions(BuildContext context) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String version = packageInfo.version;
     Map versionInfo = (await UserService.getVersions());
@@ -81,20 +86,36 @@ class Utils {
       String url = versionInfo['url'];
       String msg = versionInfo['msg'];
       int level = versionInfo['level'];
+      var temp = await JsonManager.getLocation('version');
+      if (temp == version && level != 1) {
+        return;
+      }
       print('版本过低');
       Modal.show(
         context,
         child: JUDialog(
           hasCancel: true,
           hasCommonBack: false,
-          title: '更新',
+          title: level == 1 ? '强制更新' : '更新',
           subTitle: 'Upgrade',
+          cancelText: level == 1 ? '退出' : '跳过此版本',
           msg: "当前版本:$newVersion\n更新提示:$msg",
-          callback: () {
+          callback: () async {
             print('升级了');
+            if (await canLaunch(url)) {
+              await launch(url);
+            } else {
+              throw 'Could not launch $url';
+            }
           },
           cancelBack: () {
             print('取消了');
+            if (level == 1) {
+              SystemNavigator.pop();
+            } else {
+              JsonManager.setLocation('version', version);
+              Navigator.of(context).pop();
+            }
           },
         ),
       );

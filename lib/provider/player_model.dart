@@ -150,7 +150,7 @@ class PlayerModel extends MuProvider {
       if (music.url == null) {
         playingMusic(music);
       } else {
-        int result = await _audioPlayer.play(music.url.midUrl);
+        int result = await _audioPlayer.play(music.url.midUrl, stayAwake: true);
         if (music.lyric == null) {
           getLyric(music).then((Lyric lyric) {
             music.lyric = lyric;
