@@ -12,7 +12,7 @@ import 'package:music/services/q/songs_service.dart';
 import 'package:music/stores/provider.dart';
 import 'package:music/utils/utils.dart';
 import 'package:music/utils/json_manager.dart';
-import 'package:music_notification/music_notification.dart';
+// import 'package:music_notification/music_notification.dart';
 import 'package:toast/toast.dart';
 
 class PlayerModel extends MuProvider {
@@ -39,12 +39,12 @@ class PlayerModel extends MuProvider {
   MusicEntity get play => _play;
 
   //给系统发出通知用
-  MusicNotification notification;
+  // MusicNotification notification;
   //*************方法 */
   PlayerModel() {
     initMusic();
-    initPlayer();
-    initNotification();
+    // initPlayer();
+    // initNotification();
   }
   initMusic() async {
     _parse(await JsonManager.getMusicList());
@@ -60,21 +60,21 @@ class PlayerModel extends MuProvider {
     }
   }
 
-  initNotification() {
-    MusicNotification.lastStream.listen((_) {
-      last();
-    });
-    MusicNotification.nextStream.listen((_) {
-      next();
-    });
-    MusicNotification.stateChangeStream.listen((PlayerState state) {
-      if (isPlaying) {
-        pause();
-      } else {
-        resume();
-      }
-    });
-  }
+  // initNotification() {
+  //   MusicNotification.lastStream.listen((_) {
+  //     last();
+  //   });
+  //   MusicNotification.nextStream.listen((_) {
+  //     next();
+  //   });
+  //   MusicNotification.stateChangeStream.listen((PlayerState state) {
+  //     if (isPlaying) {
+  //       pause();
+  //     } else {
+  //       resume();
+  //     }
+  //   });
+  // }
 
   Future<List<MusicEntity>> search(String key) {
     return SongService().searchQQ(key);
@@ -268,11 +268,11 @@ class PlayerModel extends MuProvider {
         imageUrl,
         options: Options(responseType: ResponseType.bytes), //设置接收类型为bytes
       );
-      MusicNotification.start(NotifiParams(
-          imgUrl: Uint8List.fromList(list.data),
-          singer: play.singer,
-          musicName: play.name,
-          isPlaying: isPlaying));
+      // MusicNotification.start(NotifiParams(
+      //     imgUrl: Uint8List.fromList(list.data),
+      //     singer: play.singer,
+      //     musicName: play.name,
+      //     isPlaying: isPlaying));
     }
   }
 

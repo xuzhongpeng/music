@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music/config/http.dart';
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
                 )), //字体颜色
             fontFamily: 'alifont',
             buttonColor: Colors.black),
-        home: new HomePage(),
+        home: AudioServiceWidget(child: new HomePage()),
       ),
     );
   }

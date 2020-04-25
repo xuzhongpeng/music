@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,10 +21,15 @@ import 'package:music/provider/player_model.dart';
 import 'package:music/services/q/songs_service.dart';
 import 'package:music/stores/store.dart';
 import 'package:music/entities/classification.dart';
+import 'package:music/utils/auto_player_task.dart';
 import 'package:music/utils/json_manager.dart';
 import 'package:music/utils/utils.dart';
 import 'package:toast/toast.dart';
+
 // import 'package:music/utils/sql_utils.dart';
+void _audioPlayerTaskEntrypoint() async {
+  AudioServiceBackground.run(() => AudioPlayerTask());
+}
 
 class HomePage extends StatefulWidget {
   @override
@@ -93,11 +99,20 @@ class _HomePageState extends State<HomePage> {
                 ),
                 onPressed: () {
                   // Navigator.of(context).push(FadeRoute(page: LyricPage()));
-                  if (model.userDetail != null) {
-                    Scaffold.of(context).openDrawer();
-                  } else {
-                    alertInfo();
-                  }
+                  // if (model.userDetail != null) {
+                  //   Scaffold.of(context).openDrawer();
+                  // } else {
+                  //   alertInfo();
+                  // }
+
+                  AudioService.start(
+                    backgroundTaskEntrypoint: _audioPlayerTaskEntrypoint,
+                    androidNotificationChannelName: 'Audio Service Demo',
+                    notificationColor: 0xFF2196f3,
+                    androidNotificationIcon: 'mipmap/ic_launcher',
+                    enableQueue: true,
+                  );
+                  // AudioService.play();
                 },
               ),
             ),
@@ -116,7 +131,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(FadeRoute(page: SearchSongs()));
+                  AudioService.play();
+                  // Navigator.of(context).push(FadeRoute(page: SearchSongs()));
                 },
               ),
             ),
