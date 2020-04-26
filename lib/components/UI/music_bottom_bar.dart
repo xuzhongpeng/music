@@ -1,4 +1,5 @@
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/page_route.dart';
@@ -141,9 +142,11 @@ class MusicBottomBar extends StatelessWidget {
                                               width: 35,
                                               child: IconButton(
                                                 icon: Icon(_playModel
-                                                            .audioPlayer
-                                                            .state ==
-                                                        AudioPlayerState.PLAYING
+                                                            .screenState
+                                                            ?.playbackState
+                                                            .basicState ==
+                                                        BasicPlaybackState
+                                                            .playing
                                                     ? IconFont.iconzanting
                                                     : IconFont.iconbofang),
                                                 color: Theme.of(context)
@@ -152,9 +155,11 @@ class MusicBottomBar extends StatelessWidget {
                                                 iconSize: 20,
                                                 onPressed: () {
                                                   if (_playModel
-                                                          .audioPlayer.state ==
-                                                      AudioPlayerState
-                                                          .PLAYING) {
+                                                          .screenState
+                                                          .playbackState
+                                                          .basicState ==
+                                                      BasicPlaybackState
+                                                          .playing) {
                                                     _playModel.pause();
                                                   } else {
                                                     _playModel.resume();

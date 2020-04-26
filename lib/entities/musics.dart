@@ -1,3 +1,5 @@
+import 'package:audio_service/audio_service.dart';
+
 import 'from_type.dart';
 import 'lyric.dart';
 
@@ -61,6 +63,15 @@ class MusicEntity {
     map['from'] = from.toString();
     if (lyric != null) map['lyric'] = lyric.toJson();
     return map;
+  }
+
+  MediaItem toMediaItem() {
+    return MediaItem(
+        id: this.url.midUrl,
+        album: '',
+        title: this.name,
+        artist: this.singer,
+        artUri: this.headerImg);
   }
 }
 
