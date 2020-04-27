@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/loading.dart';
@@ -14,11 +15,17 @@ import 'package:music/utils/utils.dart';
 import 'package:music/utils/json_manager.dart';
 // import 'package:music_notification/music_notification.dart';
 import 'package:toast/toast.dart';
+import 'package:music/utils/auto_player_task.dart';
+import 'package:rxdart/rxdart.dart';
+
+_textToSpeechTaskEntrypoint(List<MediaItem> musics) {
+  return () => AudioServiceBackground.run(() => AudioPlayerTask(musics));
+}
 
 class PlayerModel extends MuProvider {
   //**************播放器相关 */
-  AudioPlayer _audioPlayer = AudioPlayer();
-  AudioPlayer get audioPlayer => _audioPlayer;
+  // AudioPlayer _audioPlayer = AudioPlayer();
+  // AudioPlayer get audioPlayer => _audioPlayer;
   //当前播放音乐的时间长度
   Duration duration;
   //当前播放音乐定位
@@ -43,7 +50,7 @@ class PlayerModel extends MuProvider {
   //*************方法 */
   PlayerModel() {
     initMusic();
-    // initPlayer();
+    initPlayer();
     // initNotification();
   }
   initMusic() async {
@@ -56,10 +63,25 @@ class PlayerModel extends MuProvider {
       _play = temp.first;
     }
     if (_play != null) {
-      await _audioPlayer.setUrl(_play.url.minUrl);
+      // await _audioPlayer.setUrl(_play.url.minUrl);
     }
   }
 
+  //获取播放状态
+  Stream<ScreenState> get screenStateStream =>
+      Rx.combineLatest3<List<MediaItem>, MediaItem, PlaybackState, ScreenState>(
+          AudioService.queueStream,
+          AudioService.currentMediaItemStream,
+          AudioService.playbackStateStream,
+          (queue, mediaItem, playbackState) =>
+              ScreenState(queue, mediaItem, playbackState));
+  final BehaviorSubject<double> _dragPositionSubject =
+      BehaviorSubject.seeded(null);
+  //获取当前播放时间
+  Stream get postionStream => Rx.combineLatest2<double, double, double>(
+      _dragPositionSubject.stream,
+      Stream.periodic(Duration(milliseconds: 200)),
+      (dragPosition, _) => dragPosition);
   // initNotification() {
   //   MusicNotification.lastStream.listen((_) {
   //     last();
@@ -93,43 +115,54 @@ class PlayerModel extends MuProvider {
   }
 
   String n = "0";
+  ScreenState screenState;
 
   ///是否在播放
   bool isPlaying = false;
   initPlayer() {
+    screenStateStream.listen((ScreenState state) {
+      screenState = state;
+    });
+    List<MediaItem> musicList = musics.map((m) => m.toMediaItem()).toList();
+    return AudioService.start(
+      backgroundTaskEntrypoint: _textToSpeechTaskEntrypoint(musicList),
+      androidNotificationChannelName: 'JSSHOU的音乐盒',
+      notificationColor: 0xFF2196f3,
+      androidNotificationIcon: 'mipmap/ic_launcher',
+    );
     //播放总时间变化时
-    audioPlayer.onDurationChanged.listen((duration) {
-      this.duration = duration;
-      _changeSlider();
-      notifyListeners();
-    });
-    //播放时间变化时
-    audioPlayer.onAudioPositionChanged.listen((position) {
-      // if (n != position.inSeconds.toString()) {
-      //   n = position.inSeconds.toString();
-      // }
-      this.position = position;
-      _changeSlider();
-      notifyListeners();
-    });
-    audioPlayer.onPlayerStateChanged.listen((AudioPlayerState state) {
-      isPlaying = state == AudioPlayerState.PLAYING ? true : false;
-      notifyListeners();
-    });
-    audioPlayer.onPlayerCompletion.listen((_) {
-      // this.isPlaying = false;
-      print('播放完成,下一首');
-      next();
-      notifyListeners();
-    });
+    // audioPlayer.onDurationChanged.listen((duration) {
+    //   this.duration = duration;
+    //   _changeSlider();
+    //   notifyListeners();
+    // });
+    // //播放时间变化时
+    // audioPlayer.onAudioPositionChanged.listen((position) {
+    //   // if (n != position.inSeconds.toString()) {
+    //   //   n = position.inSeconds.toString();
+    //   // }
+    //   this.position = position;
+    //   _changeSlider();
+    //   notifyListeners();
+    // });
+    // audioPlayer.onPlayerStateChanged.listen((AudioPlayerState state) {
+    //   isPlaying = state == AudioPlayerState.PLAYING ? true : false;
+    //   notifyListeners();
+    // });
+    // audioPlayer.onPlayerCompletion.listen((_) {
+    //   // this.isPlaying = false;
+    //   print('播放完成,下一首');
+    //   next();
+    //   notifyListeners();
+    // });
   }
 
 //如果下一首5s内没播放 那么自动跳转
   _awaitTime() {
     Future.delayed(Duration(milliseconds: 5000), () {
-      if (_audioPlayer.state != AudioPlayerState.PLAYING) {
-        next();
-      }
+      // if (_audioPlayer.state != AudioPlayerState.PLAYING) {
+      //   next();
+      // }
     });
   }
 
@@ -146,11 +179,12 @@ class PlayerModel extends MuProvider {
   //播放新音乐
   Future<bool> playing(MusicEntity music) async {
     if (play?.id != music.id) {
-      await _audioPlayer.stop();
+      await AudioService.stop();
       if (music.url == null) {
         playingMusic(music);
       } else {
-        int result = await _audioPlayer.play(music.url.midUrl, stayAwake: true);
+        AudioService.addQueueItem(music.toMediaItem());
+        AudioService.play();
         if (music.lyric == null) {
           getLyric(music).then((Lyric lyric) {
             music.lyric = lyric;
@@ -159,7 +193,7 @@ class PlayerModel extends MuProvider {
         }
         setPlayingSong(music);
         notifyListeners();
-        return result == 1;
+        return true;
       }
     } else {
       return false;
@@ -191,14 +225,14 @@ class PlayerModel extends MuProvider {
 
   //暂停
   pause() {
-    _audioPlayer.pause();
+    AudioService.pause();
     setNotification(isPlaying: false);
     notifyListeners();
   }
 
   //播放
   resume() {
-    _audioPlayer.resume();
+    AudioService.play();
     setNotification(isPlaying: true);
     notifyListeners();
   }
@@ -248,7 +282,9 @@ class PlayerModel extends MuProvider {
   }
 
   seekPlayer(int seekValue) {
-    audioPlayer.seek(new Duration(seconds: seekValue));
+    // AudioService.seekTo(seekValue);
+    _dragPositionSubject.add(seekValue.toDouble());
+    // audioPlayer.seek(new Duration(seconds: seekValue));
     notifyListeners();
   }
 
@@ -279,7 +315,8 @@ class PlayerModel extends MuProvider {
   @override
   void dispose() {
     super.dispose();
-    _audioPlayer.dispose();
+    // _audioPlayer.dispose();
+    AudioService.disconnect();
   }
 
   //获取需要缓存的数据

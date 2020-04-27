@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:audioplayers/audioplayers.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/loading.dart';
 import 'package:music/components/UI/lyric_ui.dart';
@@ -14,6 +14,7 @@ import 'package:music/pages/lyric_page.dart';
 import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
+import 'package:music/utils/auto_player_task.dart';
 
 final GlobalKey<PlayerState> musicPlayerKey = new GlobalKey();
 
@@ -35,7 +36,7 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
   final _rotateTween = new Tween<double>(begin: -0.15, end: 0.0);
   final _commonTween = new Tween<double>(begin: 0.0, end: 1.0);
   // PlayerModel get _model => Store.value<PlayerModel>(context);
-  StreamSubscription<AudioPlayerState> stateStream;
+  StreamSubscription<ScreenState> stateStream;
   @override
   void initState() {
     super.initState();
@@ -58,19 +59,17 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
         controllerRecord.forward();
       }
     });
-    judeState(
-        Store.value<PlayerModel>(context, listen: false).audioPlayer.state);
+    judeState(Store.value<PlayerModel>(context, listen: false).screenState);
     stateStream = Store.value<PlayerModel>(context, listen: false)
-        .audioPlayer
-        .onPlayerStateChanged
+        .screenStateStream
         .listen((state) {
       judeState(state);
     });
   }
 
-  judeState(AudioPlayerState state) {
+  judeState(ScreenState state) {
     setState(() {
-      if (state == AudioPlayerState.PLAYING) {
+      if (state.playbackState.basicState == BasicPlaybackState.playing) {
         controllerRecord.forward();
         controllerNeedle.forward();
       } else {

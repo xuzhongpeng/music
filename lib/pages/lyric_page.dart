@@ -120,8 +120,7 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
                 },
                 child: StreamBuilder<Duration>(
                   stream: Store.value<PlayerModel>(context, listen: false)
-                      .audioPlayer
-                      .onAudioPositionChanged,
+                      .postionStream,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var curTime = snapshot.data.inSeconds;

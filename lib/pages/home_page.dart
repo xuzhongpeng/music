@@ -26,11 +26,6 @@ import 'package:music/utils/json_manager.dart';
 import 'package:music/utils/utils.dart';
 import 'package:toast/toast.dart';
 
-// import 'package:music/utils/sql_utils.dart';
-void _audioPlayerTaskEntrypoint() async {
-  AudioServiceBackground.run(() => AudioPlayerTask());
-}
-
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -98,21 +93,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 onPressed: () {
-                  // Navigator.of(context).push(FadeRoute(page: LyricPage()));
-                  // if (model.userDetail != null) {
-                  //   Scaffold.of(context).openDrawer();
-                  // } else {
-                  //   alertInfo();
-                  // }
-
-                  AudioService.start(
-                    backgroundTaskEntrypoint: _audioPlayerTaskEntrypoint,
-                    androidNotificationChannelName: 'Audio Service Demo',
-                    notificationColor: 0xFF2196f3,
-                    androidNotificationIcon: 'mipmap/ic_launcher',
-                    enableQueue: true,
-                  );
-                  // AudioService.play();
+                  Navigator.of(context).push(FadeRoute(page: LyricPage()));
+                  if (model.userDetail != null) {
+                    Scaffold.of(context).openDrawer();
+                  } else {
+                    alertInfo();
+                  }
                 },
               ),
             ),

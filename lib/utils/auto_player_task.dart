@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 
 class AudioPlayerTask extends BackgroundAudioTask {
-  final _queue = <MediaItem>[
+  AudioPlayerTask(List<MediaItem> music) {
+    _queue = music;
+  }
+  List<MediaItem> _queue = <MediaItem>[
     MediaItem(
-      id: "http://122.226.161.16/amobile.music.tc.qq.com/C4000006aAaN4WFln8.m4a?guid=2796982635&vkey=462CEE5D3579E8A019B9F1F397C973FDC8DADDA3CD1F4FD68DB836A9A0E01F1FFE18D250423ED108803A5C3ABAE69E895DBFAD6346294C3B&uin=1899&fromtag=66",
+      id: "http://122.226.161.16/amobile.music.tc.qq.com/C400004f5sFR2BRTvg.m4a?guid=2796982635&vkey=B828B7EE72326A2E9CDD0E1CBA60DAB28DBD2461A26740B8DC2B4B8AD75FEE06A9508DEDDAD07EBEBE309648091700670520425D129BB378&uin=1899&fromtag=66",
       album: "Science Friday",
       title: "A Salute To Head-Scratching Science",
       artist: "Science Friday and WNYC Studios",
@@ -16,7 +19,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
           "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg",
     ),
     MediaItem(
-      id: "http://122.226.161.16/amobile.music.tc.qq.com/C400003iXNJf1aKtxn.m4a?guid=2796982635&vkey=4A73184E06344878A2D7FB5862245B165B933E7521BBCF333096F84434336E03C84625DCE9C973FB6489462E4C9F8992CEB78F48414C6E72&uin=1899&fromtag=66",
+      id: "http://122.226.161.16/amobile.music.tc.qq.com/C400000WHlhC3GEuPj.m4a?guid=2796982635&vkey=A4F42E93B771E02732F78E2E35E8A52296443C10B3ECC5DDEDB3C060DFF4354D65D663A4C1A47B079E45DFB16B4DB1D45823653C2AB833DC&uin=1899&fromtag=66",
       album: "Science Friday",
       title: "From Cat Rheology To Operatic Incompetence",
       artist: "Science Friday and WNYC Studios",
@@ -43,37 +46,42 @@ class AudioPlayerTask extends BackgroundAudioTask {
 
   MediaItem get mediaItem => _queue[_queueIndex];
 
-  BasicPlaybackState _eventToBasicState(AudioPlayerState event) {
-    // if (event.) {
-    //   return BasicPlaybackState.buffering;
-    // } else {
-    switch (event) {
-      case AudioPlayerState.STOPPED:
-        return BasicPlaybackState.stopped;
-      case AudioPlayerState.PAUSED:
-        return BasicPlaybackState.paused;
-      case AudioPlayerState.PLAYING:
-        return BasicPlaybackState.playing;
-      case AudioPlayerState.COMPLETED:
-        return BasicPlaybackState.stopped;
-      default:
-        throw Exception("Illegal state");
+  BasicPlaybackState _eventToBasicState(AudioPlaybackEvent event) {
+    if (event.buffering) {
+      return BasicPlaybackState.buffering;
+    } else {
+      switch (event.state) {
+        case AudioPlaybackState.none:
+          return BasicPlaybackState.none;
+        case AudioPlaybackState.stopped:
+          return BasicPlaybackState.stopped;
+        case AudioPlaybackState.paused:
+          return BasicPlaybackState.paused;
+        case AudioPlaybackState.playing:
+          return BasicPlaybackState.playing;
+        case AudioPlaybackState.connecting:
+          return _skipState ?? BasicPlaybackState.connecting;
+        case AudioPlaybackState.completed:
+          return BasicPlaybackState.stopped;
+        default:
+          throw Exception("Illegal state");
+      }
     }
-    // }
   }
 
   @override
   Future<void> onStart() async {
-    // var playerStateSubscription = _audioPlayer.playbackStateStream
-    //     .where((state) => state == AudioPlayerState.COMPLETED)
-    //     .listen((state) {
-    //   _handlePlaybackCompleted();
-    // });
-    var eventSubscription = _audioPlayer.onPlayerStateChanged.listen((event) {
+    var playerStateSubscription = _audioPlayer.playbackStateStream
+        .where((state) => state == AudioPlaybackState.completed)
+        .listen((state) {
+      _handlePlaybackCompleted();
+    });
+    var eventSubscription = _audioPlayer.playbackEventStream.listen((event) {
+      final state = _eventToBasicState(event);
       if (state != BasicPlaybackState.stopped) {
         _setState(
           state: state,
-          position: position.inMilliseconds,
+          position: event.position.inMilliseconds,
         );
       }
     });
@@ -81,39 +89,8 @@ class AudioPlayerTask extends BackgroundAudioTask {
     AudioServiceBackground.setQueue(_queue);
     await onSkipToNext();
     await _completer.future;
-    initPlayer();
-    // playerStateSubscription.cancel();
+    playerStateSubscription.cancel();
     eventSubscription.cancel();
-  }
-
-  initPlayer() {
-    //播放总时间变化时
-    _audioPlayer.onDurationChanged.listen((duration) {
-      this.duration = duration;
-    });
-    //播放时间变化时
-    _audioPlayer.onAudioPositionChanged.listen((position) {
-      this.position = position;
-      _changeServiceState();
-    });
-    _audioPlayer.onPlayerStateChanged.listen((AudioPlayerState event) {
-      state = _eventToBasicState(event);
-      _changeServiceState();
-    });
-    _audioPlayer.onPlayerCompletion.listen((_) {
-      // this.isPlaying = false;
-      print('播放完成,下一首');
-      _handlePlaybackCompleted();
-    });
-  }
-
-  _changeServiceState() {
-    if (state != BasicPlaybackState.stopped) {
-      _setState(
-        state: state,
-        position: position.inMilliseconds,
-      );
-    }
   }
 
   void _handlePlaybackCompleted() {
@@ -154,20 +131,20 @@ class AudioPlayerTask extends BackgroundAudioTask {
         ? BasicPlaybackState.skippingToNext
         : BasicPlaybackState.skippingToPrevious;
     await _audioPlayer.setUrl(mediaItem.id);
-    _skipState = null;
-    // Resume playback if we were playing
-    if (_playing) {
-      onPlay();
-    } else {
-      _setState(state: BasicPlaybackState.paused);
-    }
+    // _skipState = null;
+    // // Resume playback if we were playing
+    // if (_playing) {
+    //   onPlay();
+    // } else {
+    //   _setState(state: BasicPlaybackState.paused);
+    // }
   }
 
   @override
   void onPlay() {
     if (_skipState == null) {
       _playing = true;
-      _audioPlayer.play(mediaItem.id);
+      _audioPlayer.play();
     }
   }
 
@@ -198,7 +175,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
 
   void _setState({@required BasicPlaybackState state, int position}) {
     if (position == null) {
-      // position = _audioPlayer;
+      position = _audioPlayer.playbackEvent.position.inMilliseconds;
     }
     AudioServiceBackground.setState(
       controls: getControls(state),
@@ -252,3 +229,11 @@ MediaControl stopControl = MediaControl(
   label: 'Stop',
   action: MediaAction.stop,
 );
+
+class ScreenState {
+  final List<MediaItem> queue;
+  final MediaItem mediaItem;
+  final PlaybackState playbackState;
+
+  ScreenState(this.queue, this.mediaItem, this.playbackState);
+}
