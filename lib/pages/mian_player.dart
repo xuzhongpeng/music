@@ -14,6 +14,7 @@ import 'package:music/pages/lyric_page.dart';
 import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
+import 'package:music/utils/auto_player.dart';
 import 'package:music/utils/auto_player_task.dart';
 
 final GlobalKey<PlayerState> musicPlayerKey = new GlobalKey();
@@ -59,23 +60,26 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
         controllerRecord.forward();
       }
     });
-    judeState(Store.value<PlayerModel>(context, listen: false).screenState);
-    stateStream = Store.value<PlayerModel>(context, listen: false)
-        .screenStateStream
-        .listen((state) {
-      judeState(state);
-    });
+    judeState();
+    // stateStream = Store.value<PlayerModel>(context, listen: false)
+    //     .screenStateStream
+    //     .listen((state) {
+    //   judeState(state);
+    // });
   }
 
-  judeState(ScreenState state) {
-    setState(() {
-      if (state.playbackState.basicState == BasicPlaybackState.playing) {
-        controllerRecord.forward();
-        controllerNeedle.forward();
-      } else {
-        controllerRecord.stop(canceled: false);
-        controllerNeedle.reverse();
-      }
+  StreamSubscription _screenSubscription;
+  judeState() {
+    _screenSubscription = AutoPlayer.screenStateStream.listen((state) {
+      setState(() {
+        if (state?.playbackState?.playing == true) {
+          controllerRecord.forward();
+          controllerNeedle.forward();
+        } else {
+          controllerRecord.stop(canceled: false);
+          controllerNeedle.reverse();
+        }
+      });
     });
   }
 
@@ -249,7 +253,8 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
   void dispose() {
     controllerRecord.dispose();
     controllerNeedle.dispose();
-    stateStream.cancel();
+    stateStream?.cancel();
+    _screenSubscription?.cancel();
     super.dispose();
   }
 }

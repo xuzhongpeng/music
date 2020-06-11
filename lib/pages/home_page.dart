@@ -26,6 +26,8 @@ import 'package:music/utils/json_manager.dart';
 import 'package:music/utils/utils.dart';
 import 'package:toast/toast.dart';
 
+// import 'exmaple.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -65,6 +67,8 @@ class _HomePageState extends State<HomePage> {
   alertInfo() {
     SureUserInfo.show(context, (text) async {
       if (text != null) await model.saveUserInfo(text, context);
+      // Navigator.of(context)
+      //     .push(MaterialPageRoute(builder: (_) => MainScreen()));
     });
   }
 
@@ -93,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(FadeRoute(page: LyricPage()));
+                  // Navigator.of(context).push(FadeRoute(page: LyricPage()));
                   if (model.userDetail != null) {
                     Scaffold.of(context).openDrawer();
                   } else {
@@ -117,8 +121,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 onPressed: () {
-                  AudioService.play();
-                  // Navigator.of(context).push(FadeRoute(page: SearchSongs()));
+                  // AudioService.play();
+                  Navigator.of(context).push(FadeRoute(page: SearchSongs()));
                 },
               ),
             ),

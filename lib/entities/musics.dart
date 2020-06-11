@@ -67,11 +67,12 @@ class MusicEntity {
 
   MediaItem toMediaItem() {
     return MediaItem(
-        id: this.url.midUrl,
+        id: this.url?.midUrl ?? this.url?.minUrl ?? this.url?.bigUrl,
         album: '',
         title: this.name,
         artist: this.singer,
-        artUri: this.headerImg);
+        artUri: this.headerImg,
+        extras: this.toJson());
   }
 }
 

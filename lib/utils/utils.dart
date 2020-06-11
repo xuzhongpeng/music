@@ -46,8 +46,10 @@ class Utils {
       for (int i = 0; i < slices.length - 1; i++) {
         slices[i].endTime = slices[i + 1].startTime;
       }
-      slices[slices.length - 1].endTime = Duration(hours: 1).inSeconds;
-      lyric.slices = slices;
+      if (slices.length != 0) {
+        slices[slices.length - 1].endTime = Duration(hours: 1).inSeconds;
+        lyric.slices = slices;
+      }
       return lyric;
     });
   }

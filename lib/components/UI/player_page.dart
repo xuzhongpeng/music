@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/color/theme.dart';
 import 'package:music/components/iconfont/iconfont.dart';
@@ -176,7 +177,7 @@ class PlayerState extends State<Player> {
               child: new IconButton(
                 iconSize: 30,
                 onPressed: () {
-                  _playerModel.last();
+                  AudioService.skipToPrevious();
                 },
                 icon: new Icon(
                   IconFont.iconshangyishou,
@@ -192,9 +193,9 @@ class PlayerState extends State<Player> {
                 iconSize: 30,
                 onPressed: () async {
                   if (_playerModel.isPlaying) {
-                    _playerModel.pause();
+                    AudioService.pause();
                   } else {
-                    _playerModel.resume();
+                    _playerModel.playing();
                   }
                 },
                 padding: const EdgeInsets.all(0.0),
@@ -214,7 +215,8 @@ class PlayerState extends State<Player> {
                 iconSize: 30,
                 onPressed: () {
                   //next
-                  _playerModel.next();
+                  // _playerModel.next();
+                  AudioService.skipToNext();
                 },
                 icon: new Icon(
                   IconFont.iconxiayishou,
@@ -234,10 +236,19 @@ class PlayerState extends State<Player> {
           width: MediaQuery.of(context).size.width * 0.8,
           child: new Slider(
             key: Key(_playerModel.sliderValue.toString()),
+            min: 0.0,
+            max: 1.0, //_playerModel.duration.inMilliseconds.toDouble(),
             onChanged: (newValue) {
+              _playerModel.dragPositionSubject.add(newValue);
               _playerModel.seek(newValue);
             },
             value: _playerModel.sliderValue ?? 0.0,
+            onChangeStart: (_) {
+              print("*********");
+            },
+            onChangeEnd: (_) {
+              print("************");
+            },
             activeColor: color,
           ),
         ),

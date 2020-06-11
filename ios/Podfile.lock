@@ -1,19 +1,19 @@
 PODS:
   - audio_service (0.0.1):
     - Flutter
-  - audioplayers (0.0.1):
-    - Flutter
   - Flutter (1.0.0)
   - flutter_isolate (0.0.1):
     - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
-  - music_notification (0.0.1):
+  - just_audio (0.0.1):
     - Flutter
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
+    - Flutter
+  - path_provider_linux (0.0.1):
     - Flutter
   - path_provider_macos (0.0.1):
     - Flutter
@@ -25,12 +25,12 @@ PODS:
 
 DEPENDENCIES:
   - audio_service (from `.symlinks/plugins/audio_service/ios`)
-  - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
   - flutter_isolate (from `.symlinks/plugins/flutter_isolate/ios`)
-  - music_notification (from `.symlinks/plugins/music_notification/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_linux (from `.symlinks/plugins/path_provider_linux/ios`)
   - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
@@ -42,18 +42,18 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   audio_service:
     :path: ".symlinks/plugins/audio_service/ios"
-  audioplayers:
-    :path: ".symlinks/plugins/audioplayers/ios"
   Flutter:
     :path: ".symlinks/flutter/ios"
   flutter_isolate:
     :path: ".symlinks/plugins/flutter_isolate/ios"
-  music_notification:
-    :path: ".symlinks/plugins/music_notification/ios"
+  just_audio:
+    :path: ".symlinks/plugins/just_audio/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_linux:
+    :path: ".symlinks/plugins/path_provider_linux/ios"
   path_provider_macos:
     :path: ".symlinks/plugins/path_provider_macos/ios"
   sqflite:
@@ -63,13 +63,13 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   audio_service: f509d65da41b9521a61f1c404dd58651f265a567
-  audioplayers: 84f968cea3f2deab00ec4f8ff53358b3c0b3992c
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_isolate: 0edf5081826d071adf21759d1eb10ff5c24503b5
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  music_notification: 4b6e7e01f82a0d02f47ff3694dcffed3d89d4b3e
+  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  path_provider_linux: 4d630dc393e1f20364f3e3b4a2ff41d9674a84e4
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298

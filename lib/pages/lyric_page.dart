@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music/components/UI/lyric_ui.dart';
@@ -9,6 +10,7 @@ import 'package:music/entities/lyric.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
 import 'package:music/utils/utils.dart';
+import 'package:rxdart/rxdart.dart';
 
 class Application {
   static double screenWidth;
@@ -58,6 +60,8 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
     _lyricWidget.curLine = 0;
   }
 
+  final BehaviorSubject<double> _dragPositionSubject =
+      BehaviorSubject.seeded(null);
   @override
   void dispose() {
     // TODO: implement dispose
@@ -101,8 +105,8 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
                                     ScreenUtil().setWidth(100)) {
                           //跳转
                           // widget.model.seekPlay(_lyricWidget.dragLineTime);
-                          Store.value<PlayerModel>(context)
-                              .seekPlayer(_lyricWidget.dragLineTime);
+                          AudioService.seekTo(Duration(
+                              milliseconds: _lyricWidget.dragLineTime));
                         }
                       }
                     : null,
@@ -118,15 +122,25 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
                   // 拖动防抖
                   cancelDragTimer();
                 },
-                child: StreamBuilder<Duration>(
-                  stream: Store.value<PlayerModel>(context, listen: false)
-                      .postionStream,
+                child: StreamBuilder<double>(
+                  stream: Rx.combineLatest2<double, double, double>(
+                      _dragPositionSubject.stream,
+                      Stream.periodic(Duration(milliseconds: 200)),
+                      (dragPosition, _) => dragPosition),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      var curTime = snapshot.data.inSeconds;
+                      var state =
+                          Store.value<PlayerModel>(context, listen: false);
+                      // int position = state
+                      //     .screenState.playbackState.currentPosition
+                      //     .inMilliseconds;
+
+                      // int duration =
+                      //     state.screenState.mediaItem?.duration?.inMilliseconds;
+                      var curTime = snapshot.data;
                       // 获取当前在哪一行
-                      int curLine =
-                          Utils.findLyricIndex(curTime, widget.lyric.slices);
+                      int curLine = Utils.findLyricIndex(
+                          curTime.toInt(), widget.lyric.slices);
                       if (!_lyricWidget.isDragging) {
                         startLineAnim(curLine);
                       }

@@ -1,23 +1,38 @@
 // import 'package:audioplayers/audioplayers.dart';
+import 'dart:math';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/page_route.dart';
 import 'package:music/components/iconfont/iconfont.dart';
 import 'package:music/components/neumorphism/shadow.dart';
+import 'package:music/entities/musics.dart';
 import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/pages/mian_player.dart';
 import 'package:music/stores/store.dart';
+import 'package:music/utils/auto_player.dart';
+import 'package:music/utils/auto_player_task.dart';
+import 'package:rxdart/rxdart.dart';
 
-class MusicBottomBar extends StatelessWidget {
+class MusicBottomBar extends StatefulWidget {
   final GlobalKey<ScaffoldState> globalKeyState;
   MusicBottomBar({@required this.globalKeyState});
+
+  @override
+  _MusicBottomBarState createState() => _MusicBottomBarState();
+}
+
+class _MusicBottomBarState extends State<MusicBottomBar> {
+  PlayerModel get _model => Store.value<PlayerModel>(context);
   @override
   Widget build(BuildContext context) {
     double imgWidth = 35;
-    return Store.connect<PlayerModel>(builder: (context, _playModel, _) {
-      return _playModel.play != null
+    return Builder(builder: (context) {
+      final mediaItem = _model.play;
+      final processingState = _model.processingState;
+      return mediaItem != null
           ? SafeArea(
               child: Container(
                 height: 60,
@@ -36,7 +51,7 @@ class MusicBottomBar extends StatelessWidget {
                       child: LinearProgressIndicator(
                         backgroundColor: Colors.grey[100],
                         valueColor: AlwaysStoppedAnimation(Colors.blue),
-                        value: _playModel.sliderValue ?? 0.0,
+                        value: _model.sliderValue,
                       ),
                     ),
                     Expanded(
@@ -49,7 +64,7 @@ class MusicBottomBar extends StatelessWidget {
                                 alignment: Alignment.center,
                                 padding: EdgeInsets.only(right: 10, left: 15),
                                 child: Hero(
-                                  tag: _playModel.play?.id ?? "image",
+                                  tag: mediaItem?.id ?? "image",
                                   child: Material(
                                       child: Container(
                                     width: imgWidth,
@@ -65,8 +80,7 @@ class MusicBottomBar extends StatelessWidget {
                                           borderRadius: BorderRadius.circular(
                                               imgWidth / 2),
                                           child: CachedNetworkImage(
-                                              imageUrl:
-                                                  _playModel.play?.headerImg,
+                                              imageUrl: mediaItem?.headerImg,
                                               fit: BoxFit.cover),
                                         )),
                                   )),
@@ -84,7 +98,7 @@ class MusicBottomBar extends StatelessWidget {
                                   alignment: Alignment.centerLeft,
                                   height: 25,
                                   width: 170,
-                                  child: Text(_playModel.play?.name ?? '',
+                                  child: Text(mediaItem?.name ?? '',
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           // color: Color.fromRGBO(0, 0, 0, 1),
@@ -94,7 +108,7 @@ class MusicBottomBar extends StatelessWidget {
                                 Container(
                                   alignment: Alignment.centerLeft,
                                   height: 15,
-                                  child: Text(_playModel.play?.singer ?? '',
+                                  child: Text(mediaItem?.singer ?? '',
                                       style: TextStyle(
                                           // color: Color.fromRGBO(119, 119, 119, 1),
                                           fontSize: 10)),
@@ -121,7 +135,8 @@ class MusicBottomBar extends StatelessWidget {
                                               iconSize: 20,
                                               onPressed: () {
                                                 //next
-                                                _playModel.next();
+                                                // _playModel.next();
+                                                AudioService.skipToNext();
                                               },
                                               icon: new Icon(
                                                 Icons.skip_next,
@@ -141,12 +156,7 @@ class MusicBottomBar extends StatelessWidget {
                                               height: 35,
                                               width: 35,
                                               child: IconButton(
-                                                icon: Icon(_playModel
-                                                            .screenState
-                                                            ?.playbackState
-                                                            .basicState ==
-                                                        BasicPlaybackState
-                                                            .playing
+                                                icon: Icon(_model.isPlaying
                                                     ? IconFont.iconzanting
                                                     : IconFont.iconbofang),
                                                 color: Theme.of(context)
@@ -154,16 +164,20 @@ class MusicBottomBar extends StatelessWidget {
                                                     .color,
                                                 iconSize: 20,
                                                 onPressed: () {
-                                                  if (_playModel
-                                                          .screenState
-                                                          .playbackState
-                                                          .basicState ==
-                                                      BasicPlaybackState
-                                                          .playing) {
-                                                    _playModel.pause();
-                                                  } else {
-                                                    _playModel.resume();
+                                                  if (_model.isPlaying)
+                                                    AudioService.pause();
+                                                  else {
+                                                    _model.playing();
                                                   }
+                                                  // if (_playModel
+                                                  //         .screenState
+                                                  //         .playbackState
+                                                  //         .basicState ==
+                                                  //     BasicPlaybackState
+                                                  //         .playing) {
+                                                  //   _playModel.pause();
+                                                  // } else {
+                                                  // }
                                                 },
                                               ),
                                             ),
@@ -185,7 +199,8 @@ class MusicBottomBar extends StatelessWidget {
                                                     .primaryIconTheme
                                                     .color,
                                                 onPressed: () {
-                                                  globalKeyState.currentState
+                                                  widget.globalKeyState
+                                                      .currentState
                                                       .openEndDrawer();
                                                 },
                                               ),

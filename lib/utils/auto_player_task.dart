@@ -1,108 +1,102 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music/config/http.dart';
+import 'package:music/entities/musics.dart';
+import 'package:music/services/q/songs_service.dart';
 
 class AudioPlayerTask extends BackgroundAudioTask {
-  AudioPlayerTask(List<MediaItem> music) {
-    _queue = music;
+  AudioPlayerTask({List<MediaItem> mediaItem}) {
+    if (mediaItem != null) _queue.addAll(mediaItem);
   }
-  List<MediaItem> _queue = <MediaItem>[
-    MediaItem(
-      id: "http://122.226.161.16/amobile.music.tc.qq.com/C400004f5sFR2BRTvg.m4a?guid=2796982635&vkey=B828B7EE72326A2E9CDD0E1CBA60DAB28DBD2461A26740B8DC2B4B8AD75FEE06A9508DEDDAD07EBEBE309648091700670520425D129BB378&uin=1899&fromtag=66",
-      album: "Science Friday",
-      title: "A Salute To Head-Scratching Science",
-      artist: "Science Friday and WNYC Studios",
-      // duration: 5739820,
-      artUri:
-          "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg",
-    ),
-    MediaItem(
-      id: "http://122.226.161.16/amobile.music.tc.qq.com/C400000WHlhC3GEuPj.m4a?guid=2796982635&vkey=A4F42E93B771E02732F78E2E35E8A52296443C10B3ECC5DDEDB3C060DFF4354D65D663A4C1A47B079E45DFB16B4DB1D45823653C2AB833DC&uin=1899&fromtag=66",
-      album: "Science Friday",
-      title: "From Cat Rheology To Operatic Incompetence",
-      artist: "Science Friday and WNYC Studios",
-      // duration: 2856950,
-      artUri:
-          "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg",
-    ),
-  ];
+  List<MediaItem> _queue = <MediaItem>[];
   int _queueIndex = -1;
   AudioPlayer _audioPlayer = new AudioPlayer();
-  Completer _completer = Completer();
-  BasicPlaybackState _skipState;
+  AudioProcessingState _skipState;
   bool _playing;
 
-  //当前播放音乐的时间长度
-  Duration duration;
-  //当前播放音乐定位
-  Duration position;
-  bool isPlaying;
-  BasicPlaybackState state;
-  bool get hasNext => _queueIndex + 1 < _queue.length;
-
+  // bool get hasNext => _queueIndex + 1 < _queue.length;
+  StreamSubscription<AudioPlaybackEvent> _eventSubscription;
+  StreamSubscription<AudioPlaybackState> _playerStateSubscription;
   bool get hasPrevious => _queueIndex > 0;
 
   MediaItem get mediaItem => _queue[_queueIndex];
 
-  BasicPlaybackState _eventToBasicState(AudioPlaybackEvent event) {
-    if (event.buffering) {
-      return BasicPlaybackState.buffering;
-    } else {
-      switch (event.state) {
-        case AudioPlaybackState.none:
-          return BasicPlaybackState.none;
-        case AudioPlaybackState.stopped:
-          return BasicPlaybackState.stopped;
-        case AudioPlaybackState.paused:
-          return BasicPlaybackState.paused;
-        case AudioPlaybackState.playing:
-          return BasicPlaybackState.playing;
-        case AudioPlaybackState.connecting:
-          return _skipState ?? BasicPlaybackState.connecting;
-        case AudioPlaybackState.completed:
-          return BasicPlaybackState.stopped;
-        default:
-          throw Exception("Illegal state");
-      }
-    }
-  }
+  // AudioProcessingState _eventToBasicState(AudioPlaybackEvent event) {
+  //   if (event.buffering) {
+  //     return AudioProcessingState.buffering;
+  //   } else {
+  //     switch (event.state) {
+  //       case AudioPlaybackState.none:
+  //         return AudioProcessingState.none;
+  //       case AudioPlaybackState.stopped:
+  //         return AudioProcessingState.stopped;
+  //       case AudioPlaybackState.paused:
+  //         return AudioProcessingState.p;
+  //       case AudioPlaybackState.playing:
+  //         return AudioProcessingState.playing;
+  //       case AudioPlaybackState.connecting:
+  //         return _skipState ?? AudioProcessingState.connecting;
+  //       case AudioPlaybackState.completed:
+  //         return AudioProcessingState.stopped;
+  //       default:
+  //         throw Exception("Illegal state");
+  //     }
+  //   }
+  // }
 
   @override
-  Future<void> onStart() async {
-    var playerStateSubscription = _audioPlayer.playbackStateStream
+  Future<void> onStart(Map<String, dynamic> params) async {
+    // _audioPlayer.durationStream.listen((d) {
+    //   AudioServiceBackground.setMediaItem(mediaItem);
+    // });
+    _playerStateSubscription = _audioPlayer.playbackStateStream
         .where((state) => state == AudioPlaybackState.completed)
         .listen((state) {
-      _handlePlaybackCompleted();
+      onSkipToNext();
     });
-    var eventSubscription = _audioPlayer.playbackEventStream.listen((event) {
-      final state = _eventToBasicState(event);
-      if (state != BasicPlaybackState.stopped) {
-        _setState(
-          state: state,
-          position: event.position.inMilliseconds,
-        );
+    _eventSubscription = _audioPlayer.playbackEventStream.listen((event) {
+      final bufferingState =
+          event.buffering ? AudioProcessingState.buffering : null;
+      switch (event.state) {
+        case AudioPlaybackState.paused:
+          _setState(
+            processingState: bufferingState ?? AudioProcessingState.ready,
+            position: event.position,
+          );
+          break;
+        case AudioPlaybackState.playing:
+          _setState(
+            processingState: bufferingState ?? AudioProcessingState.ready,
+            position: event.position,
+          );
+          break;
+        case AudioPlaybackState.connecting:
+          _setState(
+            processingState: _skipState ?? AudioProcessingState.connecting,
+            position: event.position,
+          );
+          break;
+        default:
+          break;
       }
     });
-
     AudioServiceBackground.setQueue(_queue);
-    await onSkipToNext();
-    await _completer.future;
-    playerStateSubscription.cancel();
-    eventSubscription.cancel();
+    // await onSkipToNext();
   }
 
-  void _handlePlaybackCompleted() {
-    if (hasNext) {
-      onSkipToNext();
-    } else {
-      onStop();
-    }
-  }
+  // void _handlePlaybackCompleted() {
+  //   if (hasNext) {
+  //     onSkipToNext();
+  //   } else {
+  //     onStop();
+  //   }
+  // }
 
   void playPause() {
-    if (AudioServiceBackground.state.basicState == BasicPlaybackState.playing)
+    if (AudioServiceBackground.state.playing)
       onPause();
     else
       onPlay();
@@ -115,50 +109,73 @@ class AudioPlayerTask extends BackgroundAudioTask {
   Future<void> onSkipToPrevious() => _skip(-1);
 
   Future<void> _skip(int offset) async {
-    final newPos = _queueIndex + offset;
-    if (!(newPos >= 0 && newPos < _queue.length)) return;
+    var newPos = _queueIndex + offset;
+    if (newPos < 0) {
+      newPos = _queue.length - 1;
+    } else if (newPos > _queue.length - 1) {
+      newPos = 0;
+    }
+    _skipState = offset > 0
+        ? AudioProcessingState.skippingToNext
+        : AudioProcessingState.skippingToPrevious;
+    _queueIndex = newPos;
+    _beginPlay();
+  }
+
+  Future<void> _beginPlay() async {
     if (_playing == null) {
-      // First time, we want to start playing
       _playing = true;
-    } else if (_playing) {
-      // Stop current item
+    } else if (_audioPlayer.playbackState == AudioPlaybackState.playing) {
       await _audioPlayer.stop();
     }
-    // Load next item
-    _queueIndex = newPos;
-    AudioServiceBackground.setMediaItem(mediaItem);
-    _skipState = offset > 0
-        ? BasicPlaybackState.skippingToNext
-        : BasicPlaybackState.skippingToPrevious;
-    await _audioPlayer.setUrl(mediaItem.id);
-    // _skipState = null;
-    // // Resume playback if we were playing
+    Duration duration;
+    if (mediaItem.id == null || mediaItem.id.startsWith('jsshou')) {
+      await getNewUrl();
+    }
+    try {
+      duration = await _audioPlayer.setUrl(mediaItem.id);
+    } catch (e) {
+      await getNewUrl();
+      try {
+        duration = await _audioPlayer.setUrl(mediaItem.id);
+      } catch (e) {
+        onSkipToNext();
+        return;
+      }
+    }
+    MediaItem item = mediaItem.copyWith(
+      duration: duration,
+    );
+    AudioServiceBackground.setMediaItem(item);
+    _skipState = null;
+    // Resume playback if we were playing
     // if (_playing) {
-    //   onPlay();
+    onPlay();
     // } else {
-    //   _setState(state: BasicPlaybackState.paused);
+    //   _setState(processingState: AudioProcessingState.ready);
     // }
   }
 
   @override
-  void onPlay() {
+  void onPlay() async {
     if (_skipState == null) {
       _playing = true;
-      _audioPlayer.play();
+      await _audioPlayer.play();
     }
   }
 
   @override
-  void onPause() {
+  void onPause() async {
     if (_skipState == null) {
       _playing = false;
-      _audioPlayer.pause();
+      await _audioPlayer.pause();
+      // await _setState(state: AudioProcessingState.paused);
     }
   }
 
   @override
-  void onSeekTo(int position) {
-    _audioPlayer.seek(Duration(milliseconds: position));
+  void onSeekTo(Duration position) {
+    _audioPlayer.seek(position);
   }
 
   @override
@@ -167,25 +184,76 @@ class AudioPlayerTask extends BackgroundAudioTask {
   }
 
   @override
-  void onStop() {
-    _audioPlayer.stop();
-    _setState(state: BasicPlaybackState.stopped);
-    _completer.complete();
+  void onStop() async {
+    await _audioPlayer.stop();
+    await _audioPlayer.dispose();
+    _playing = false;
+    await _setState(processingState: AudioProcessingState.stopped);
   }
 
-  void _setState({@required BasicPlaybackState state, int position}) {
-    if (position == null) {
-      position = _audioPlayer.playbackEvent.position.inMilliseconds;
+  @override
+  void onAddQueueItem(MediaItem item) async {
+    int i = _queue.indexWhere((_q) => _q.id == item.id);
+    if (i == -1) {
+      _queue.add(item);
+      await AudioServiceBackground.setQueue(_queue);
     }
-    AudioServiceBackground.setState(
-      controls: getControls(state),
+  }
+
+  @override
+  void onAddQueueItemAt(MediaItem mediaItem, int index) {
+    _queue.insert(index, mediaItem);
+  }
+
+  @override
+  void onRemoveQueueItem(MediaItem mediaItem) async {
+    MediaItem item = _queue[
+        _queue.indexWhere((_q) => _q.extras['cid'] == mediaItem.extras['cid'])];
+    _queue.remove(item);
+    await AudioServiceBackground.setQueue(_queue);
+  }
+
+//跳转到对应音乐
+  @override
+  void onPlayFromMediaId(String id) async {
+    _queueIndex = _queue.indexWhere((_q) => _q.extras['cid'] == id);
+    if (_queueIndex == -1) return;
+    _beginPlay();
+  }
+
+  @override
+  void onSkipToQueueItem(String id) async {}
+
+  Future<void> _setState({
+    AudioProcessingState processingState,
+    Duration position,
+    Duration bufferedPosition,
+  }) async {
+    if (position == null) {
+      position = _audioPlayer.playbackEvent.position;
+    }
+    await AudioServiceBackground.setState(
+      controls: getControls(),
       systemActions: [MediaAction.seekTo],
-      basicState: state,
+      processingState:
+          processingState ?? AudioServiceBackground.state.processingState,
+      playing: _playing,
       position: position,
+      bufferedPosition: bufferedPosition ?? position,
+      speed: _audioPlayer.speed,
     );
   }
 
-  List<MediaControl> getControls(BasicPlaybackState state) {
+  //动态获取最新的歌曲url
+  Future<void> getNewUrl({VoidCallback callback}) async {
+    MusicEntity song = MusicEntity.fromJson(mediaItem.extras);
+    Http http = Http();
+    if (http.dio == null) http.init();
+    song.url = Song.fromQQ(minUrl: await SongService().getDetail(song));
+    _queue[_queueIndex] = song.toMediaItem();
+  }
+
+  List<MediaControl> getControls() {
     if (_playing) {
       return [
         skipToPreviousControl,

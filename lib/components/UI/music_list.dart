@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/iconfont/iconfont.dart';
@@ -6,6 +7,8 @@ import 'package:music/entities/musics.dart';
 import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
+import 'package:music/utils/auto_player.dart';
+import 'package:music/utils/auto_player_task.dart';
 
 typedef Future<void> OnTapMusic(MusicEntity list);
 
@@ -37,6 +40,7 @@ class MusicItem extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     PlayerModel _model = Store.value<PlayerModel>(context);
+    final basicState = _model?.processingState ?? AudioProcessingState.none;
     return Container(
       width: size.width,
       height: 80,
@@ -97,8 +101,6 @@ class MusicItem extends StatelessWidget {
             ),
           ),
           Container(
-              // width: size.width * 0.3,
-              // color: Colors.blue,
               padding: EdgeInsets.only(right: 15),
               alignment: Alignment.centerRight,
               child: Row(

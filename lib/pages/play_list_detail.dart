@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/UI/app_bar.dart';
@@ -11,6 +12,7 @@ import 'package:music/entities/playlist.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/services/q/songs_service.dart';
 import 'package:music/stores/store.dart';
+import 'package:music/utils/auto_player.dart';
 
 class PlayListDetail extends StatefulWidget {
   final PlayList play;
@@ -142,8 +144,7 @@ class _PlayListDetailState extends State<PlayListDetail> {
           child: MusicItem(
             song: songList[index],
           ),
-          onTap: () {
-            //
+          onTap: () async {
             _playModel.playingMusic(songList[index]);
           },
         ),
