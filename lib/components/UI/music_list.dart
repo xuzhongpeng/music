@@ -7,8 +7,8 @@ import 'package:music/entities/musics.dart';
 import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
-import 'package:music/utils/auto_player.dart';
-import 'package:music/utils/auto_player_task.dart';
+// import 'package:music/utils/auto_player.dart';
+// import 'package:music/utils/auto_player_task.dart1';
 
 typedef Future<void> OnTapMusic(MusicEntity list);
 
@@ -40,7 +40,7 @@ class MusicItem extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     PlayerModel _model = Store.value<PlayerModel>(context);
-    final basicState = _model?.processingState ?? AudioProcessingState.none;
+    // final basicState = _model?.processingState ?? AudioProcessingState.idle;
     return Container(
       width: size.width,
       height: 80,
@@ -92,7 +92,7 @@ class MusicItem extends StatelessWidget {
                     height: 20,
                     child: Text(song.singer,
                         style: TextStyle(
-                            color: Theme.of(context).textTheme.body2.color,
+                            color: Theme.of(context).textTheme.bodyText2.color,
                             // color: Color.fromRGBO(119, 119, 119, 1),
                             fontSize: 12)),
                   )

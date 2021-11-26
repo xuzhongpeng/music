@@ -31,10 +31,10 @@ class UserInfo extends StatelessWidget {
                             color: Theme.of(context).backgroundColor),
                         accountEmail: Text(
                           user.creator.uinWeb + ('(更换)'),
-                          style: Theme.of(context).textTheme.body2,
+                          style: Theme.of(context).textTheme.bodyText2,
                         ),
                         accountName: Text(user.creator.nick,
-                            style: Theme.of(context).textTheme.body1),
+                            style: Theme.of(context).textTheme.bodyText1),
                         onDetailsPressed: () {
                           init();
                         },
@@ -47,7 +47,7 @@ class UserInfo extends StatelessWidget {
                       ListTile(
                         title: Text(
                           '关于软件',
-                          style: Theme.of(context).textTheme.body1,
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
                         onTap: () {
                           Modal.show(
@@ -64,12 +64,12 @@ class UserInfo extends StatelessWidget {
                       ListTile(
                         title: Text(
                           '收藏',
-                          style: Theme.of(context).textTheme.body1,
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
                         subtitle: Text(model.love.length.toString() + "首歌曲",
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.body2),
+                            style: Theme.of(context).textTheme.bodyText2),
                         leading: OutShadow(
                           radius: 25,
                           child: CircleImage(
@@ -92,12 +92,12 @@ class UserInfo extends StatelessWidget {
                             (music) => ListTile(
                               title: Text(
                                 music.title,
-                                style: Theme.of(context).textTheme.body1,
+                                style: Theme.of(context).textTheme.bodyText1,
                               ),
                               subtitle: Text(music.subtitle,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.body2),
+                                  style: Theme.of(context).textTheme.bodyText2),
                               leading: OutShadow(
                                 radius: 25,
                                 child: CircleImage(
@@ -121,12 +121,12 @@ class UserInfo extends StatelessWidget {
                                 ListTile(
                                   title: Text(
                                     music.title,
-                                    style: Theme.of(context).textTheme.body1,
+                                    style: Theme.of(context).textTheme.bodyText1,
                                   ),
                                   subtitle: Text(music.subtitle,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context).textTheme.body2),
+                                      style: Theme.of(context).textTheme.bodyText2),
                                   leading: OutShadow(
                                     radius: 25,
                                     child: CircleImage(

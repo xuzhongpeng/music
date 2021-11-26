@@ -239,7 +239,7 @@ class PlayerState extends State<Player> {
             min: 0.0,
             max: 1.0, //_playerModel.duration.inMilliseconds.toDouble(),
             onChanged: (newValue) {
-              _playerModel.dragPositionSubject.add(newValue);
+              // _playerModel.dragPositionSubject.add(newValue);
               _playerModel.seek(newValue);
             },
             value: _playerModel.sliderValue ?? 0.0,

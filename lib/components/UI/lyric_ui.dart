@@ -21,16 +21,16 @@ class LyricWidget extends CustomPainter with ChangeNotifier {
   get offsetY => _offsetY;
   //时间颜色
   TextStyle smallGrayTextStyle =
-      TextStyle(color: JUTheme().theme.textTheme.body2.color);
+      TextStyle(color: JUTheme().theme.textTheme.bodyText2.color);
   //歌词颜色
   TextStyle commonGrayTextStyle =
-      TextStyle(color: JUTheme().theme.textTheme.body2.color);
+      TextStyle(color: JUTheme().theme.textTheme.bodyText2.color);
   //当前行颜色
   TextStyle commonWhiteTextStyle =
-      TextStyle(color: JUTheme().theme.textTheme.body1.color, fontSize: 18);
+      TextStyle(color: JUTheme().theme.textTheme.bodyText1.color, fontSize: 18);
   //拖动状态颜色
   TextStyle commonWhite70TextStyle =
-      TextStyle(color: JUTheme().theme.textTheme.body1.color);
+      TextStyle(color: JUTheme().theme.textTheme.bodyText1.color);
   set offsetY(double value) {
     // 判断如果是在拖动状态下
     if (isDragging) {

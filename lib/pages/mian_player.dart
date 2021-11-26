@@ -11,11 +11,13 @@ import 'package:music/components/anims/record_anim.dart';
 import 'package:music/components/color/theme.dart';
 import 'package:music/components/neumorphism/shadow.dart';
 import 'package:music/pages/lyric_page.dart';
+import 'package:music/player/notifiers/play_button_notifier.dart';
+import 'package:music/player/page_manager.dart';
+import 'package:music/player/services/service_locator.dart';
 import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/stores/store.dart';
-import 'package:music/utils/auto_player.dart';
-import 'package:music/utils/auto_player_task.dart';
+// import 'package:music/utils/auto_player.dart';
 
 final GlobalKey<PlayerState> musicPlayerKey = new GlobalKey();
 
@@ -37,7 +39,7 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
   final _rotateTween = new Tween<double>(begin: -0.15, end: 0.0);
   final _commonTween = new Tween<double>(begin: 0.0, end: 1.0);
   // PlayerModel get _model => Store.value<PlayerModel>(context);
-  StreamSubscription<ScreenState> stateStream;
+  // StreamSubscription<ScreenState> stateStream;
   @override
   void initState() {
     super.initState();
@@ -68,11 +70,13 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
     // });
   }
 
-  StreamSubscription _screenSubscription;
+  VoidCallback _screenSubscription;
+  final pageManager = getIt<PageManager>();
   judeState() {
-    _screenSubscription = AutoPlayer.screenStateStream.listen((state) {
+
+    _screenSubscription = () {
       setState(() {
-        if (state?.playbackState?.playing == true) {
+        if (pageManager?.repeatButtonNotifier?.value == ButtonState.playing) {
           controllerRecord.forward();
           controllerNeedle.forward();
         } else {
@@ -80,7 +84,8 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
           controllerNeedle.reverse();
         }
       });
-    });
+    };
+    pageManager.repeatButtonNotifier.addListener(_screenSubscription);
   }
 
   @override
@@ -128,7 +133,7 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
                         _model.play?.name ?? '',
                         style: new TextStyle(
                             fontSize: 18.0,
-                            color: JUTheme().theme.textTheme.body1.color),
+                            color: JUTheme().theme.textTheme.bodyText1.color),
                       ),
                     ),
                   ),
@@ -182,7 +187,7 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
           ),
           Store.connect<PlayerModel>(
             builder: (_, _model, __) => Hero(
-              tag: _model.play.id,
+              tag: _model.play?.id,
               child: Material(
                 color: Color.fromRGBO(1, 1, 1, 0),
                 child: new Container(
@@ -253,8 +258,9 @@ class _MusicPlayerExampleState extends State<MusicPlayerExample>
   void dispose() {
     controllerRecord.dispose();
     controllerNeedle.dispose();
-    stateStream?.cancel();
-    _screenSubscription?.cancel();
+    // stateStream?.cancel();
+    // _screenSubscription?.cancel();
+    pageManager.repeatButtonNotifier.removeListener(_screenSubscription);
     super.dispose();
   }
 }

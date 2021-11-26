@@ -71,7 +71,7 @@ class _LyricPageState extends State<LyricPage> with TickerProviderStateMixin {
   }
 
   TextStyle commonWhiteTextStyle =
-      TextStyle(color: JUTheme().theme.textTheme.body1.color);
+      TextStyle(color: JUTheme().theme.textTheme.bodyText1.color);
   @override
   Widget build(BuildContext context) {
     Application.screenWidth = MediaQuery.of(context).size.width;

@@ -21,8 +21,8 @@ class SearchSongs extends StatefulWidget {
 }
 
 class _SearchSongsState extends State<SearchSongs> {
-  PlayerModel get _model => Store.value<PlayerModel>(context);
-  PlayerModel get _playModel => Store.value<PlayerModel>(context);
+  PlayerModel get _model => Store.value<PlayerModel>(context, listen: false);
+  PlayerModel get _playModel => Store.value<PlayerModel>(context, listen: false);
   String searchStr = '';
   TextEditingController _controller = TextEditingController();
   List<MusicEntity> musics = List();

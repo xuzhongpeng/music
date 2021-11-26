@@ -12,8 +12,8 @@ import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/pages/mian_player.dart';
 import 'package:music/stores/store.dart';
-import 'package:music/utils/auto_player.dart';
-import 'package:music/utils/auto_player_task.dart';
+// import 'package:music/utils/auto_player.dart';
+// import 'package:music/utils/auto_player_task.dart1';
 import 'package:rxdart/rxdart.dart';
 
 class MusicBottomBar extends StatefulWidget {
@@ -25,13 +25,13 @@ class MusicBottomBar extends StatefulWidget {
 }
 
 class _MusicBottomBarState extends State<MusicBottomBar> {
-  PlayerModel get _model => Store.value<PlayerModel>(context);
   @override
   Widget build(BuildContext context) {
     double imgWidth = 35;
     return Builder(builder: (context) {
+      PlayerModel _model = Store.value<PlayerModel>(context, listen: false);
       final mediaItem = _model.play;
-      final processingState = _model.processingState;
+      // final processingState = _model.processingState;
       return mediaItem != null
           ? SafeArea(
               child: Container(

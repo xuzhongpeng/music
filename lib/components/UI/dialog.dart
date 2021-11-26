@@ -106,7 +106,7 @@ class JUDialog extends StatelessWidget {
                                         style: TextStyle(
                                             color: Theme.of(context)
                                                 .textTheme
-                                                .body2
+                                                .bodyText2
                                                 .color,
                                             decoration: TextDecoration.none,
                                             fontSize: 15),

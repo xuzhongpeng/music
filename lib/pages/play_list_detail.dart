@@ -12,7 +12,7 @@ import 'package:music/entities/playlist.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/services/q/songs_service.dart';
 import 'package:music/stores/store.dart';
-import 'package:music/utils/auto_player.dart';
+// import 'package:music/utils/auto_player.dart';
 
 class PlayListDetail extends StatefulWidget {
   final PlayList play;
@@ -36,7 +36,7 @@ class _PlayListDetailState extends State<PlayListDetail> {
     }
   }
 
-  PlayerModel get _playModel => Store.value<PlayerModel>(context);
+  PlayerModel get _playModel => Store.value<PlayerModel>(context, listen: false);
   init() async {
     songList = await SongService().getQSongs(id: widget.play.id);
     setState(() {});
@@ -119,7 +119,7 @@ class _PlayListDetailState extends State<PlayListDetail> {
                     children: <Widget>[
                       Icon(
                         IconFont.iconbofang,
-                        color: Theme.of(context).textTheme.body1.color,
+                        color: Theme.of(context).textTheme.bodyText1.color,
                         size: 16,
                       ),
                       Text(

@@ -62,7 +62,7 @@ class InputTypeGroup extends StatefulWidget {
 
 class _StateInputTypeGroup extends State<InputTypeGroup> {
   static final blackTextStyle = TextStyle(
-      color: JUTheme().theme.textTheme.body1.color,
+      color: JUTheme().theme.textTheme.bodyText1.color,
       fontSize: 17,
       fontWeight: FontWeight.normal);
 
@@ -154,7 +154,7 @@ class _StateInputTypeGroup extends State<InputTypeGroup> {
                     ),
                 onChanged: (text) {
                   if (text != '') setState(() {});
-                  widget.textFieldDidChanged(text);
+                  widget.textFieldDidChanged?.call(text);
                 }),
           ),
         ],

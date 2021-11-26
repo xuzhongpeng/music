@@ -11,7 +11,7 @@ class Http {
     _dio = new Dio();
     //添加拦截器
     _dio.interceptors
-        .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
+        .add(InterceptorsWrapper(onRequest: (RequestOptions options,_) async {
       print('请求url: ${options.baseUrl}${options.path}');
       print('请求参数：data:');
       print(options.data.toString());
@@ -20,10 +20,10 @@ class Http {
       print('请求参数：header:');
       print(options.headers.toString());
       return options;
-    }, onResponse: (Response response) async {
+    }, onResponse: (Response response,_) async {
       print(response.data);
       return response;
-    }, onError: (DioError e) async {
+    }, onError: (DioError e,_) async {
       print(e.toString());
       return e;
     }));

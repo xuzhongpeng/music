@@ -1,14 +1,17 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:music/config/http.dart';
+import 'package:music/provider/music_model.dart';
 import 'package:music/provider/player_model.dart';
 import 'package:music/pages/home_page.dart';
 import 'package:music/stores/store.dart';
 
-void main() {
+import 'player/services/service_locator.dart';
+
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  Http http = Http();
-  http.init();
+  Http().init();
+  await setupServiceLocator();
   return runApp(new MyApp());
 }
 
@@ -16,8 +19,7 @@ class MyApp extends StatelessWidget {
   DateTime lastPopTime;
   @override
   Widget build(BuildContext context) {
-    return AudioServiceWidget(
-      child: Store.provider(
+    return  Store.provider(
         providers: [
           ChangeNotifierProvider<PlayerModel>(create: (_) => PlayerModel()),
           // ChangeNotifierProvider<MusicModel>(create: (_) => MusicModel())
@@ -34,15 +36,14 @@ class MyApp extends StatelessWidget {
               primaryIconTheme:
                   IconThemeData(color: Color.fromRGBO(93, 124, 177, 1)),
               textTheme: TextTheme(
-                  body1: TextStyle(color: Color.fromRGBO(93, 124, 177, 1)),
-                  body2: TextStyle(
+                  bodyText1: TextStyle(color: Color.fromRGBO(93, 124, 177, 1)),
+                  bodyText2: TextStyle(
                     color: Color.fromRGBO(129, 152, 191, 1),
                   )), //字体颜色
               fontFamily: 'alifont',
               buttonColor: Colors.black),
           home: new HomePage(),
         ),
-      ),
     );
   }
 }

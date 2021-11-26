@@ -1,39 +1,18 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:music/entities/lyric.dart';
 import 'package:music/entities/musics.dart';
-import 'package:music/utils/auto_player_task.dart';
+// import 'package:music/utils/auto_player_task.dart1';
 import 'package:rxdart/rxdart.dart';
 
 import 'utils.dart';
 
-void _audioPlayerTaskEntrypoint() async {
-  // AudioServiceBackground.run(() => AudioPlayerTask(mediaItem: []));
-  AudioServiceBackground.run(() => AudioPlayerTask(mediaItem: [
-        // MediaItem(
-        //   id: "http://music.163.com/song/media/outer/url?id=1427051960.mp3",
-        //   album: "Science Friday",
-        //   title: "不要说话",
-        //   artist: "Science Friday and WNYC Studios",
-        //   artUri:
-        //       "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg",
-        // ),
-        // MediaItem(
-        //   id: "http://music.163.com/song/media/outer/url?id=1430912811.mp3",
-        //   album: "Science Friday",
-        //   title: "心墙",
-        //   artist: "Science Friday and WNYC Studios",
-        //   artUri:
-        //       "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg",
-        // ),
-      ]));
-}
 
 class AutoPlayer {
   //开始
   static start() async {
     if (AudioService.playbackState?.processingState == null ||
         AudioService.playbackState?.processingState ==
-            AudioProcessingState.none)
+            AudioProcessingState.idle)
       await AudioService.start(
         backgroundTaskEntrypoint: _audioPlayerTaskEntrypoint,
         androidNotificationChannelName: 'JSSHOU音乐',

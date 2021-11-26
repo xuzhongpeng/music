@@ -103,7 +103,7 @@ class _EnterUserInfoState extends State<EnterUserInfo> {
                               '取消',
                               style: TextStyle(
                                   color:
-                                      Theme.of(context).textTheme.body1.color,
+                                      Theme.of(context).textTheme.bodyText1.color,
                                   decoration: TextDecoration.none,
                                   fontSize: 15),
                             ),
@@ -125,7 +125,7 @@ class _EnterUserInfoState extends State<EnterUserInfo> {
                                 '确定',
                                 style: TextStyle(
                                     color:
-                                        Theme.of(context).textTheme.body1.color,
+                                        Theme.of(context).textTheme.bodyText1.color,
                                     decoration: TextDecoration.none,
                                     fontSize: 15),
                               ),

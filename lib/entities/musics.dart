@@ -71,7 +71,7 @@ class MusicEntity {
         album: '',
         title: this.name,
         artist: this.singer,
-        artUri: this.headerImg,
+        artUri: Uri.tryParse(this.headerImg),
         extras: this.toJson());
   }
 }

@@ -21,7 +21,7 @@ import 'package:music/provider/player_model.dart';
 import 'package:music/services/q/songs_service.dart';
 import 'package:music/stores/store.dart';
 import 'package:music/entities/classification.dart';
-import 'package:music/utils/auto_player_task.dart';
+// import 'package:music/utils/auto_player_task.dart1';
 import 'package:music/utils/json_manager.dart';
 import 'package:music/utils/utils.dart';
 import 'package:toast/toast.dart';
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
   init() async {
     // SqlUtils().open('model.userDetail');
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      model = Store.value<PlayerModel>(context, listen: true);
+      model = Store.value<PlayerModel>(context, listen: false);
       model.userDetail = await JsonManager.getUserInfo();
       Future.microtask(() async {
         if (model.userDetail == null) {
